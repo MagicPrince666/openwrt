@@ -1071,3 +1071,13 @@ define Device/zbtlink_zbt-wd323
 		     kmod-usb-serial kmod-usb-serial-cp210x uqmi
 endef
 TARGET_DEVICES += zbtlink_zbt-wd323
+
+define Device/xag_xlinkhs
+  ATH_SOC := ar9342
+  DEVICE_TITLE := xag xlinkhs 16M
+  IMAGE_SIZE := 16128k
+  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-acm \
+  arptables kmod-usb-net kmod-usb-net-rndis \
+  luci atftp wpad-mesh-openssl libstdcpp usbutils
+endef
+TARGET_DEVICES += xag_xlinkhs
