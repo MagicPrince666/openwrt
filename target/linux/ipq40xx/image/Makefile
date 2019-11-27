@@ -319,7 +319,11 @@ define Device/mobipromo_cm520-79f
 	DEVICE_DTS := qcom-ipq4019-cm520-79f
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
-	DEVICE_PACKAGES := ipq-wifi-mobipromo_cm520-79f kmod-usb-ledtrig-usbport
+	DEVICE_PACKAGES := ipq-wifi-mobipromo_cm520-79f kmod-usb-ledtrig-usbport \
+	fritz-caldata fritz-tffs-nand kmod-usb-core kmod-usb2 kmod-usb-acm \
+  	arptables kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-net-rtl8152 \
+  	luci atftp wpad-mesh-openssl libstdcpp usbutils kmod-sdhci kmod-mmc-spi \
+  	kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-usb-storage-extras kmod-usb3
 endef
 TARGET_DEVICES += mobipromo_cm520-79f
 
