@@ -59,8 +59,9 @@ ipq40xx_setup_interfaces()
 			"0u@eth0" "3:lan" "4:lan"
 		;;
 	mobipromo,cm520-79f)
+		ucidef_set_interfaces_lan_wan "eth0 usb0" "eth1"
 		ucidef_add_switch "switch0" \
-			"0t@eth0" "3:lan:2" "4:lan:1" "5:wan"
+			"0u@eth0" "3:lan:2" "4:lan:1" "0u@eth1" "5:wan"
 		;;
 	qxwlan,e2600ac-c1 |\
 	qxwlan,e2600ac-c2)
