@@ -45,6 +45,7 @@ case "$FIRMWARE" in
 	case "$board" in
 	8dev,jalapeno |\
 	alfa-network,ap120c-ac |\
+	cilab,meshpoint-one |\
 	glinet,gl-b1300 |\
 	linksys,ea6350v3 |\
 	mobipromo,cm520-79f |\
@@ -111,6 +112,7 @@ case "$FIRMWARE" in
 	case "$board" in
 	8dev,jalapeno |\
 	alfa-network,ap120c-ac |\
+	cilab,meshpoint-one |\
 	glinet,gl-b1300 |\
 	linksys,ea6350v3 |\
 	mobipromo,cm520-79f |\
