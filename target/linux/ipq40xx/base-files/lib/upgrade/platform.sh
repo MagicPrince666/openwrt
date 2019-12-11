@@ -50,7 +50,7 @@ platform_do_upgrade() {
 	avm,fritzbox-7530 |\
 	avm,fritzrepeater-1200 |\
 	avm,fritzrepeater-3000 |\
-	mobipromo,cm520-79f |\
+	prince,cm520-79f |\
 	p2w,r619ac |\
 	cilab,meshpoint-one |\
 	qxwlan,e2600ac-c2)

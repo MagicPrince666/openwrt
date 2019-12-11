@@ -324,10 +324,10 @@ define Device/meraki_mr33
 endef
 TARGET_DEVICES += meraki_mr33
 
-define Device/mobipromo_cm520-79f
+define Device/prince_cm520-79f
 	$(call Device/FitzImage)
 	$(call Device/UbiFit)
-	DEVICE_VENDOR := MobiPromo
+	DEVICE_VENDOR := Prince
 	DEVICE_MODEL := CM520-79F
 	DEVICE_DTS := qcom-ipq4019-cm520-79f
 	BLOCKSIZE := 128k
@@ -338,7 +338,7 @@ define Device/mobipromo_cm520-79f
   	luci atftp wpad-mesh-openssl libstdcpp usbutils kmod-sdhci kmod-mmc-spi \
   	kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-usb-storage-extras kmod-usb3
 endef
-TARGET_DEVICES += mobipromo_cm520-79f
+TARGET_DEVICES += prince_cm520-79f
 
 define Device/p2w_r619ac
 	$(call Device/FitzImage)

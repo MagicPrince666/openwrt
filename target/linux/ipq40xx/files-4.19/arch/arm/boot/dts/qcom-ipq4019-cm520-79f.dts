@@ -6,8 +6,8 @@
 #include <dt-bindings/soc/qcom,tcsr.h>
 
 / {
-	model = "MobiPromo CM520-79F";
-	compatible = "mobipromo,cm520-79f";
+	model = "Prince CM520-79F";
+	compatible = "prince,cm520-79f";
 
 	aliases {
 		led-boot = &led_sys;
