@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Copyright (C) 2013-2015 OpenWrt.org
+#
+
+. /lib/functions/uci-defaults.sh
+
+am335x_setup_interfaces()
+{
+	local board="$1"
+
+	case "$board" in
+	ti,am335x-evmsk |\
+	ti,am335x-xag-hdls-tf)
+		ucidef_set_interfaces_lan_wan "eth0" "usb0"
+		;;
+	ti,am335x-aboc)
+		ucidef_set_interfaces_lan_wan "eth0" "eth1"
+		;;
+	*)
+		ucidef_set_interface_lan "eth0"
+		;;
+	esac
+}
+
+am335x_setup_macs()
+{
+	local board="$1"
+
+	case "$board" in
+	ti,am335x-evmsk |\
+	ti,am335x-aboc |\
+	ti,am335x-xag-hdls-tf)
+		lan_mac="00:0E:C6:B0:A1:0B"
+		wan_mac=$(cat /sys/class/net/usb0/address)
+		;;
+	esac
+
+	[ -n "$lan_mac" ] && ucidef_set_interface_macaddr lan $lan_mac
+	[ -n "$wan_mac" ] && ucidef_set_interface_macaddr wan $wan_mac
+}
+
+board_config_update
+board=$(board_name)
+am335x_setup_interfaces $board
+am335x_setup_macs $board
+
+board_config_flush
+
+exit 0

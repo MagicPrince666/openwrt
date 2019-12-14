@@ -40,7 +40,12 @@ define U-Boot/omap3_beagle
   BUILD_DEVICES:=ti_omap3-beagle
 endef
 
-UBOOT_TARGETS:=omap4_panda am335x_evm omap3_overo omap3_beagle
+define U-Boot/am335x_aboc
+  NAME:=AM335x ABOC
+  BUILD_DEVICES:=ti_am335x-aboc
+endef
+
+UBOOT_TARGETS:=omap4_panda am335x_evm omap3_overo omap3_beagle am335x_aboc
 
 define Build/InstallDev
 	$(foreach device,$(BUILD_DEVICES), \

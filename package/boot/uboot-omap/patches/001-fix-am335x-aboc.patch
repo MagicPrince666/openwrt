@@ -1,0 +1,99 @@
+Index: u-boot-2019.10/board/ti/am335x/board.c
+===================================================================
+--- u-boot-2019.10.orig/board/ti/am335x/board.c	2019-10-08 05:14:02.000000000 +0800
++++ u-boot-2019.10/board/ti/am335x/board.c	2019-12-14 15:04:37.597011158 +0800
+@@ -266,7 +266,7 @@
+ 
+ 	if (board_is_evm_sk())
+ 		return &dpll_ddr3_303MHz[ind];
+-	else if (board_is_pb() || board_is_bone_lt() || board_is_icev2())
++	else if (board_is_pb() || board_is_bone_lt() || board_is_icev2() || board_is_aboc())
+ 		return &dpll_ddr3_400MHz[ind];
+ 	else if (board_is_evm_15_or_later())
+ 		return &dpll_ddr3_303MHz[ind];
+@@ -297,7 +297,7 @@
+ 	if (bone_not_connected_to_ac_power())
+ 		freq = MPUPLL_M_600;
+ 
+-	if (board_is_pb() || board_is_bone_lt())
++	if (board_is_pb() || board_is_bone_lt() || board_is_aboc())
+ 		freq = MPUPLL_M_1000;
+ 
+ 	switch (freq) {
+@@ -349,7 +349,7 @@
+ 	 * Override what we have detected since we know if we have
+ 	 * a Beaglebone Black it supports 1GHz.
+ 	 */
+-	if (board_is_pb() || board_is_bone_lt())
++	if (board_is_pb() || board_is_bone_lt() || board_is_aboc())
+ 		freq = MPUPLL_M_1000;
+ 
+ 	switch (freq) {
+@@ -556,7 +556,7 @@
+ 	if (board_is_evm_sk())
+ 		config_ddr(303, &ioregs_evmsk, &ddr3_data,
+ 			   &ddr3_cmd_ctrl_data, &ddr3_emif_reg_data, 0);
+-	else if (board_is_pb() || board_is_bone_lt())
++	else if (board_is_pb() || board_is_bone_lt() || board_is_aboc())
+ 		config_ddr(400, &ioregs_bonelt,
+ 			   &ddr3_beagleblack_data,
+ 			   &ddr3_beagleblack_cmd_ctrl_data,
+@@ -799,7 +799,7 @@
+ #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
+ 	char *name = NULL;
+ 
+-	if (board_is_bone_lt()) {
++	if (board_is_bone_lt() || board_is_aboc()) {
+ 		/* BeagleBoard.org BeagleBone Black Wireless: */
+ 		if (!strncmp(board_ti_get_rev(), "BWA", 3)) {
+ 			name = "BBBW";
+@@ -941,6 +941,8 @@
+ 		return 0;
+ 	else if (board_is_icev2() && !strcmp(name, "am335x-icev2"))
+ 		return 0;
++	else if(board_is_aboc())
++		return 0;
+ 	else
+ 		return -1;
+ }
+Index: u-boot-2019.10/board/ti/am335x/board.h
+===================================================================
+--- u-boot-2019.10.orig/board/ti/am335x/board.h	2019-10-08 05:14:02.000000000 +0800
++++ u-boot-2019.10/board/ti/am335x/board.h	2019-12-14 15:01:12.421019711 +0800
+@@ -33,6 +33,11 @@
+ 	return board_ti_is("A335BNLT");
+ }
+ 
++static inline int board_is_aboc(void)
++{
++ 	return 1;
++}
++
+ static inline int board_is_pb(void)
+ {
+ 	return board_ti_is("A335PBGL");
+@@ -51,7 +56,7 @@
+ static inline int board_is_beaglebonex(void)
+ {
+ 	return board_is_pb() || board_is_bone() || board_is_bone_lt() ||
+-	       board_is_bbg1() || board_is_bben();
++	       board_is_aboc() || board_is_bbg1() || board_is_bben();
+ }
+ 
+ static inline int board_is_evm_sk(void)
+Index: u-boot-2019.10/board/ti/am335x/mux.c
+===================================================================
+--- u-boot-2019.10.orig/board/ti/am335x/mux.c	2019-10-08 05:14:02.000000000 +0800
++++ u-boot-2019.10/board/ti/am335x/mux.c	2019-12-14 15:05:51.245008088 +0800
+@@ -420,6 +420,11 @@
+ 		configure_module_pin_mux(uart3_icev2_pin_mux);
+ 		configure_module_pin_mux(rmii1_pin_mux);
+ 		configure_module_pin_mux(spi0_pin_mux);
++	} else if(board_is_aboc()){
++		puts("this is magic prince aboc");
++		configure_module_pin_mux(rgmii1_pin_mux);
++		configure_module_pin_mux(mmc0_pin_mux);
++		configure_module_pin_mux(mmc1_pin_mux);
+ 	} else {
+ 		/* Unknown board. We might still be able to boot. */
+ 		puts("Bad EEPROM or unknown board, cannot configure pinmux.");

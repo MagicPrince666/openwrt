@@ -81,4 +81,17 @@ endef
 
 TARGET_DEVICES += ti_omap3-beagle
 
+define Device/ti_am335x-aboc
+  DEVICE_VENDOR := Magic Prince
+  DEVICE_MODEL := AM335x ABOC
+  DEVICE_DTS := am335x-aboc
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-acm kmod-usb-gadget-cdc-composite \
+  kmod-usb-gadget-eth kmod-usb-net kmod-usb-storage-extras kmod-usb-net \
+  kmod-usb-net-asix kmod-usb-net-rtl8152 kmod-usb-net-rndis usbutils \
+  luci kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-video-core kmod-video-uvc
+  CONFIG_TARGET_ROOTFS_PARTSIZE := 3600
+endef
+
+TARGET_DEVICES += ti_am335x-aboc
+
 $(eval $(call BuildImage))
