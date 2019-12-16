@@ -1,0 +1,12 @@
+Index: u-boot-2019.10/arch/arm/dts/Makefile
+===================================================================
+--- u-boot-2019.10.orig/arch/arm/dts/Makefile	2019-10-08 05:14:02.000000000 +0800
++++ u-boot-2019.10/arch/arm/dts/Makefile	2019-12-14 21:46:22.211386308 +0800
+@@ -287,6 +287,7 @@
+ 	am335x-draco.dtb \
+ 	am335x-evm.dtb \
+ 	am335x-evmsk.dtb \
++	am335x-aboc.dtb \
+ 	am335x-bonegreen.dtb \
+ 	am335x-icev2.dtb \
+ 	am335x-pocketbeagle.dtb \
