@@ -1111,7 +1111,7 @@ endef
 TARGET_DEVICES += zbtlink_zbt-wd323
 
 define Device/xag_xlinkhs
-  ATH_SOC := ar9342
+  SOC := ar9342
   DEVICE_TITLE := xag xlinkhs 16M
   IMAGE_SIZE := 16128k
   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-acm \
