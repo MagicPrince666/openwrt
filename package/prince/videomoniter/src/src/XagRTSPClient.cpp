@@ -120,7 +120,7 @@ void * XagRtsp::rtsp_thead (void *arg) {
   // }
 
   // There are argc-1 URLs: argv[1] through argv[argc-1].  Open and start streaming each one:
-  openURL(*env, "xag", "rtsp://192.168.1.201:554/user=admin&password=&channel=1&stream=0.sdp?");
+  openURL(*env, "xag", "rtsp://192.168.1.202:554/user=admin&password=&channel=1&stream=1.sdp?");
 
   // All subsequent activity takes place within the event loop:
   env->taskScheduler().doEventLoop(&eventLoopWatchVariable);
