@@ -97,7 +97,22 @@ char eventLoopWatchVariable = 0;
 // 	exit(0);
 // }
 
+#define SPEED_
 
+#ifdef SPEED_
+#include "xag_time_tick.h"
+// 1S循环定时器
+void xag_transmit_speed(int data) {
+	//printf("live555 in %.2f KB/s\naoa out %.2f KB/s\n", (double)XagRtsp::live_cnt/1000.0, (double)A2spipe::aoa_cnt/1000.0);
+	printf("live555 in %.2f KB/s\n", (double)XagRtsp::live_cnt/1000.0);
+	//printf("camera in %.2f KB/s\n", (double)XagPic::camera_in/1000.0);
+	//printf("aoa out %.2f KB/s\n", (double)A2spipe::aoa_cnt/1000.0);
+	XagRtsp::live_cnt = 0;
+	//XagPic::camera_in = 0;
+	//A2spipe::aoa_cnt = 0;
+	add_timer(1, xag_transmit_speed);
+}
+#endif
 
 RingBuffer XagRtsp::aoa_ring;
 cycle_buffer* XagRtsp::aoa_buffer;
@@ -105,6 +120,12 @@ cycle_buffer* XagRtsp::aoa_buffer;
 void * XagRtsp::rtsp_thead (void *arg) {
 
 //  signal(SIGINT, sigint_handler);//信号处理
+
+#ifdef SPEED_
+	signal(SIGALRM, tick);
+	alarm(1); // 1s的周期心跳
+	add_timer(1, xag_transmit_speed);
+#endif
 
   TaskScheduler* scheduler = BasicTaskScheduler::createNew();
   UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
@@ -119,8 +140,11 @@ void * XagRtsp::rtsp_thead (void *arg) {
   //   sleep(1);
   // }
 
+  char rtsp_url[128] = {0};
+  sprintf(rtsp_url, "rtsp://192.168.1.201:554/user=admin&password=&channel=1&stream=1.sdp?");
+	printf("rtsp url: %s\n",rtsp_url);
   // There are argc-1 URLs: argv[1] through argv[argc-1].  Open and start streaming each one:
-  openURL(*env, "xag", "rtsp://192.168.1.202:554/user=admin&password=&channel=1&stream=1.sdp?");
+  openURL(*env, "prince", rtsp_url);
 
   // All subsequent activity takes place within the event loop:
   env->taskScheduler().doEventLoop(&eventLoopWatchVariable);
@@ -477,11 +501,10 @@ void shutdownStream(RTSPClient* rtspClient, int exitCode) {
     // The final stream has ended, so exit the application now.
     // (Of course, if you're embedding this code into your own application, you might want to comment this out,
     // and replace it with "eventLoopWatchVariable = 1;", so that we leave the LIVE555 event loop, and continue running "main()".)
-    //exit(exitCode);
     XagRtsp::rtsp_ison = false;
     XagRtsp::video_repo = false;
-    //XagRtsp::aoa_ring.destroy(XagRtsp::aoa_buffer);
-    //XagRtsp::aoa_buffer = NULL;
+    XagRtsp::aoa_ring.destroy(XagRtsp::aoa_buffer);
+    XagRtsp::aoa_buffer = NULL;
     //exit(exitCode);
     //pthread_kill(rtsp_threadId, SIGUSR1);
     pthread_exit(NULL);

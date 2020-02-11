@@ -26,6 +26,7 @@ public:
     static int write(cycle_buffer* buffer, uint8_t *data,unsigned int length);
     static int empty(cycle_buffer* buffer);
     static int overage(cycle_buffer* buffer);
+    static int lenght(cycle_buffer* buffer);
     static int Reset(cycle_buffer* buffer);
 
 protected:   

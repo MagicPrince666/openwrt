@@ -31,4 +31,4 @@ case $BAND in
       ;;
 esac
 
-./fpv_tx $WLAN
+./video_proxy $WLAN

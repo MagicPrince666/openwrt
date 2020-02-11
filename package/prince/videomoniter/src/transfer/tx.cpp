@@ -523,7 +523,6 @@ int main(int argc, char *argv[])
 		pthread_join(thread[0],NULL);
 	}
 
-
 	if(thread[1] !=0) {   
 		pthread_join(thread[1],NULL);
 	}

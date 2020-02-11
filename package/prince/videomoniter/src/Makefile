@@ -27,7 +27,7 @@ OBJS	= $(patsubst %.cpp,%.o,$(FILES))
 COBJS	= $(patsubst %.c,%.o,$(CFILES))
 
 all:
-	cd $(livedir) ; ./genMakefiles mips
+	cd $(livedir) ; ./genMakefiles armlinux
 	cd $(livemedia) ; $(MAKE) 
 	cd $(groupsock) ; $(MAKE) 
 	cd $(usageenviroment) ; $(MAKE) 

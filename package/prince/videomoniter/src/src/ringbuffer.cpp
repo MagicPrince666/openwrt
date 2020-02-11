@@ -78,6 +78,16 @@ int RingBuffer::overage(cycle_buffer* buffer) {
         return DEFAULT_BUF_SIZE + overage;
 }
 
+//get buffer lenght
+int RingBuffer::lenght(cycle_buffer* buffer) {
+    int overage = buffer->in - buffer->out;
+
+    if(overage > 0)
+        return overage;
+    else
+        return -1*overage;
+}
+
 int RingBuffer::write(cycle_buffer* buffer, uint8_t *data,unsigned int length) {
     unsigned int len = 0;
 
