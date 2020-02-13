@@ -117,6 +117,11 @@ void xag_transmit_speed(int data) {
 RingBuffer XagRtsp::aoa_ring;
 cycle_buffer* XagRtsp::aoa_buffer;
 
+struct url_date { //柔性数组
+  int len;
+  char url[0];
+};
+
 void * XagRtsp::rtsp_thead (void *arg) {
 
 //  signal(SIGINT, sigint_handler);//信号处理
@@ -140,11 +145,14 @@ void * XagRtsp::rtsp_thead (void *arg) {
   //   sleep(1);
   // }
 
-  char rtsp_url[128] = {0};
-  sprintf(rtsp_url, "rtsp://192.168.1.201:554/user=admin&password=&channel=1&stream=1.sdp?");
-	printf("rtsp url: %s\n",rtsp_url);
+  //char rtsp_url[128] = {0};
+  struct url_date *rtsp_url = (struct url_date *)malloc(sizeof(struct url_date) + 70*sizeof(char));
+  rtsp_url->len = 70;
+  sprintf(rtsp_url->url, "rtsp://192.168.1.201:554/user=admin&password=&channel=1&stream=1.sdp?");
+	printf("rtsp url: %s\n",rtsp_url->url);
+  
   // There are argc-1 URLs: argv[1] through argv[argc-1].  Open and start streaming each one:
-  openURL(*env, "prince", rtsp_url);
+  openURL(*env, "prince", rtsp_url->url);
 
   // All subsequent activity takes place within the event loop:
   env->taskScheduler().doEventLoop(&eventLoopWatchVariable);
