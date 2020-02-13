@@ -276,7 +276,8 @@
 	bus-width = <0x4>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&mmc1_pins>;
-	cd-gpios = <&gpio3 14 GPIO_ACTIVE_LOW>;
+	ti,non-removable;
+	//cd-gpios = <&gpio3 14 GPIO_ACTIVE_LOW>;
 };
 
 &mmc2 {
