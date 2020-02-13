@@ -413,7 +413,7 @@ void *Transfer_Encode_Thread(void *arg)
 	pthread_exit(NULL);
 }
 
-
+#define MONITOR 0
 
 int main(int argc, char *argv[])
 {
@@ -515,18 +515,19 @@ int main(int argc, char *argv[])
 	if(pthread_create(&thread[0], NULL, XagRtsp::rtsp_thead, NULL) != 0)   
         printf("Cap_H264_Video create fail!\n");
 
-
+#if MONITOR
 	if(pthread_create(&thread[1], NULL, Transfer_Encode_Thread, NULL) != 0)   
     	printf("Transfer_Encode_Thread create fail!\n");
-	
+#endif
+
 	if(thread[0] !=0) {  
 		pthread_join(thread[0],NULL);
 	}
-
+#if MONITOR
 	if(thread[1] !=0) {   
 		pthread_join(thread[1],NULL);
 	}
-
+#endif
 	printf("Broken socket\n");
 	return 0;
 }
