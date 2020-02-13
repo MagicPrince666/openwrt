@@ -413,7 +413,7 @@ void *Transfer_Encode_Thread(void *arg)
 	pthread_exit(NULL);
 }
 
-#define MONITOR 0
+#define MONITOR 1
 
 int main(int argc, char *argv[])
 {
@@ -523,11 +523,13 @@ int main(int argc, char *argv[])
 	if(thread[0] !=0) {  
 		pthread_join(thread[0],NULL);
 	}
+	
 #if MONITOR
 	if(thread[1] !=0) {   
 		pthread_join(thread[1],NULL);
 	}
 #endif
+
 	printf("Broken socket\n");
 	return 0;
 }
