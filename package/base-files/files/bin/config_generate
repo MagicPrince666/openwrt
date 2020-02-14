@@ -83,6 +83,11 @@ generate_network() {
 		set network.$1.type='$type'
 		set network.$1.ifname='$ifname'
 		set network.$1.proto='none'
+		set network.lan2='interface'
+		set network.lan2.ifname='br-lan'
+		set network.lan2.proto='static'
+		set network.lan2.ipaddr='192.168.222.1'
+		set network.lan2.netmask='255.255.255.0'
 	EOF
 
 	if [ -n "$macaddr" ]; then
