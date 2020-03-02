@@ -55,6 +55,7 @@ platform_do_upgrade() {
 	prince,cm520-79f |\
 	p2w,r619ac |\
 	cilab,meshpoint-one |\
+	engenius,eap2200 |\
 	qxwlan,e2600ac-c2)
 		nand_do_upgrade "$1"
 		;;
