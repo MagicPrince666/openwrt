@@ -75,6 +75,10 @@ define Device/xunlong_orangepi-pc2
   DEVICE_VENDOR := Xunlong
   DEVICE_MODEL := Orange Pi PC 2
   $(Device/sun50i-h5)
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-acm kmod-usb-storage-extras \
+  kmod-usb-net kmod-usb-net-asix kmod-usb-net-rtl8152 kmod-usb-net-rndis \
+  luci kmod-fs-ext4 kmod-fs-vfat kmod-fuse usbutils usb-modeswitch usbmuxd
+  CONFIG_TARGET_ROOTFS_PARTSIZE := 7168
 endef
 TARGET_DEVICES += xunlong_orangepi-pc2
 
