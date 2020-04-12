@@ -275,6 +275,30 @@ define U-Boot/Bananapi_M2_Ultra
   BUILD_DEVICES:=lemaker_bananapi-m2-ultra
 endef
 
+define U-Boot/LicheePi_Zero
+  BUILD_SUBTARGET:=cortexa7
+  NAME:=LicheePi Zero
+  BUILD_DEVICES:=sun8i-v3s-licheepi-zero
+endef
+
+define U-Boot/LicheePi_Zero_SPINAND
+  BUILD_SUBTARGET:=cortexa7v3sspinand
+  NAME:=LicheePi Zero (SPI-NAND)
+  BUILD_DEVICES:=sun8i-v3s-licheepi-zero-spinand
+endef
+
+define U-Boot/DolphinPi
+  BUILD_SUBTARGET:=cortexa7v3sspinand
+  NAME:=DolphinPi
+  BUILD_DEVICES:=sun8i-v3s-dolphinpi
+endef
+
+define U-Boot/GenericV3sBoard_SPINAND_UART2
+  BUILD_SUBTARGET:=cortexa7v3sspinand
+  NAME:=Generic V3s Board with SPI-NAND and stdout on UART2
+  BUILD_DEVICES:=sun8i-v3s-rawspinandaccessuart2
+endef
+
 UBOOT_TARGETS := \
 	a64-olinuxino \
 	a64-olinuxino-emmc \
@@ -314,7 +338,11 @@ UBOOT_TARGETS := \
 	pangolin \
 	pine64_plus \
 	sopine_baseboard \
-	orangepi_zero_plus
+	orangepi_zero_plus \
+  LicheePi_Zero \
+  LicheePi_Zero_SPINAND \
+  DolphinPi \
+  GenericV3sBoard_SPINAND_UART2
 
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 

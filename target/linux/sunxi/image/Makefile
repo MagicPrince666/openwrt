@@ -60,6 +60,9 @@ endef
 
 ifeq ($(SUBTARGET),cortexa7)
 include cortex-a7.mk
+endif
+
+ifeq ($(SUBTARGET),cortexa7v3sspinand)
 include cortex-a7-v3s-spinand.mk
 endif
 
