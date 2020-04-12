@@ -30,6 +30,22 @@ define Build/sunxi-sdcard
 	rm -f $@.boot
 endef
 
+define Build/sunxi-spinandboot
+	./gen_sunxi_spinand_onlyboot_img.sh $@ \
+		$(STAGING_DIR_IMAGE)/$(DEVICE_NAME)-u-boot-with-spl.bin \
+		$(CONFIG_SUNXI_SPINAND_PAGESIZE) \
+		$(CONFIG_SUNXI_SPINAND_BLOCKSIZE) \
+		$(CONFIG_SUN8I_V3S_SPINAND_DUPLICATE_BOOT_SPL) \
+		$(CONFIG_SUN8I_V3S_SPINAND_DUPLICATE_BOOT_UBOOT)
+endef
+
+define Build/sunxi-kernelubifs
+	./gen_sunxi_kernel_ubifs.sh $@ \
+		$(DTS_DIR)/$(SUNXI_DTS).dtb \
+		$(CONFIG_SUNXI_SPINAND_PAGESIZE) \
+		$(CONFIG_SUNXI_SPINAND_BLOCKSIZE)
+endef
+
 # why \x00\x00\x00\x00 for zImage-initramfs
 define Device/Default
   PROFILES := Default
@@ -44,6 +60,7 @@ endef
 
 ifeq ($(SUBTARGET),cortexa7)
 include cortex-a7.mk
+include cortex-a7-v3s-spinand.mk
 endif
 
 ifeq ($(SUBTARGET),cortexa8)

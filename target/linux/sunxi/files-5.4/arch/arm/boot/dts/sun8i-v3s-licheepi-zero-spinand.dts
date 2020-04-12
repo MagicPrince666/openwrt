@@ -1,0 +1,330 @@
+/*
+ * Copyright (C) 2019 Benedikt-Alexander Mokroß <bam@icognize.de>
+ *
+ * This file is dual-licensed: you can use it either under the terms
+ * of the GPL or the X11 license, at your option. Note that this dual
+ * licensing only applies to this file, and not this project as a
+ * whole.
+ *
+ *  a) This file is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License as
+ *     published by the Free Software Foundation; either version 2 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This file is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ * Or, alternatively,
+ *
+ *  b) Permission is hereby granted, free of charge, to any person
+ *     obtaining a copy of this software and associated documentation
+ *     files (the "Software"), to deal in the Software without
+ *     restriction, including without limitation the rights to use,
+ *     copy, modify, merge, publish, distribute, sublicense, and/or
+ *     sell copies of the Software, and to permit persons to whom the
+ *     Software is furnished to do so, subject to the following
+ *     conditions:
+ *
+ *     The above copyright notice and this permission notice shall be
+ *     included in all copies or substantial portions of the Software.
+ *
+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ *     OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+/dts-v1/;
+#include "sun8i-v3s-licheepi-zero.dts"
+
+/ {
+	aliases {
+		serial0 = &uart0;
+		ethernet0 = &emac;
+		ethernet1 = &esp8089;
+		spi0 = &spi0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+
+		/*fb0: framebuffer@0 {
+			compatible = "allwinner,simple-framebuffer", "simple-framebuffer";
+			allwinner,pipeline = "de0-lcd0";
+			clocks = <0x2 0x21 0x2 0x23 0x2 0x3f 0x2 0x40>;
+			status = "disabled";
+		}; */
+	};
+
+	soc {
+		syscon: syscon@1c00000 {
+			compatible = "allwinner,sun8i-v3s-system-controller",
+			"syscon";
+			reg = <0x01c00000 0x1000>;
+		};
+
+		emac: ethernet@1c30000 {
+			compatible = "allwinner,sun8i-v3s-emac";
+			syscon = <&syscon>;
+			reg = <0x01c30000 0x104>;
+			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+			interrupt-names = "macirq";
+			resets = <&ccu RST_BUS_EMAC>;
+			reset-names = "stmmaceth";
+			clocks = <&ccu CLK_BUS_EMAC>;
+			clock-names = "stmmaceth";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			phy-handle = <&int_mii_phy>;
+			phy-mode = "mii";
+			status = "okay";
+			allwinner,leds-active-low;
+
+			mdio: mdio {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				compatible = "snps,dwmac-mdio";
+			};
+
+			mdio-mux {
+				compatible = "mdio-mux", "allwinner,sun8i-h3-mdio-mux";
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				mdio-parent-bus = <&mdio>;
+
+				int_mdio: mdio@1 {
+					compatible = "allwinner,sun8i-h3-mdio-internal";
+					reg = <1>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					int_mii_phy: ethernet-phy@1 {
+						reg = <1>;
+						clocks = <&ccu CLK_BUS_EPHY>;
+						resets = <&ccu RST_BUS_EPHY>;
+						phy-is-integrated;
+					};
+				};
+			};
+		};
+
+		ehci0: usb@01c1a000 {
+			compatible = "allwinner,sun8i-v3s-ehci", "generic-ehci";
+			reg = <0x01c1a000 0x100>;
+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>;
+			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
+			phys = <&usbphy 0>;
+			phy-names = "usb";
+			status = "okay";
+		};
+
+		ohci0: usb@01c1a400 {
+			compatible = "allwinner,sun8i-v3s-ohci", "generic-ohci";
+			reg = <0x01c1a400 0x100>;
+			interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>, <&ccu CLK_USB_OHCI0>;
+			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
+			phys = <&usbphy 0>;
+			phy-names = "usb";
+			status = "okay";
+		};
+
+		pwm: pwm@1c21400 {
+			compatible = "allwinner,sun7i-a20-pwm";
+			reg = <0x01c21400 0xC>;
+			clocks = <&osc24M>;
+			#pwm-cells = <3>;
+			status = "okay";
+		};
+
+	};
+
+	wifi_pwrseq: wifi_pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		//reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; /* PB5 */
+		/* The esp8089 needs 200 ms after driving wifi-en high */
+		post-power-on-delay-ms = <200>;
+	};
+};
+
+&pwm {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pwm0_pins>, <&pwm1_pins>;
+        status = "okay";
+};
+
+&ehci0 {
+	status = "okay";
+};
+
+&ohci0 {
+	status = "okay";
+};
+
+&usb_otg {
+	dr_mode = "otg"; /* host, periphal, otg */
+	status = "okay";
+};
+
+&usbphy {
+	/* pinctrl-0 = <&usb0_id_detect_pin>; */
+	usb0_id_det-gpio = <&pio 5 6 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
+&i2c0 {
+         status = "okay";
+
+         ns2009: ns2009@48 {
+                 compatible = "nsiway,ns2009";
+                 reg = <0x48>;
+         };
+         sht21: sht21@40 {
+                 compatible = "sht21";
+                 reg = <0x40>;
+         };
+         atmel_mxt_ts@4a {
+                 compatible = "atmel,atmel_mxt_ts";
+                 reg = <0x4a>;
+                 /*interrupt-parent = <&pio>;
+                 interrupts = <6 5 IRQ_TYPE_LEVEL_LOW>;*/ //省引脚，使用轮训方式
+         };
+};
+
+&uart0 {
+	pinctrl-0 = <&uart0_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&uart1_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart2 {
+	pinctrl-0 = <&uart2_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&mmc0 { /* WiFi ESP8089 */
+	pinctrl-0 = <&mmc0_pins_a>;
+	pinctrl-names = "default";
+	status = "okay";
+	bus-width = <4>;
+	non-removable;
+	mmc-pwrseq = <&wifi_pwrseq>;
+	/* vmmc-supply = <&reg_dldo1>; */
+
+	esp8089: sdio_wifi@1 {
+		compatible = "esp,esp8089";
+		reg = <1>;
+		esp,crystal-26M-en = <2>;
+	};
+};
+
+&spi0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi0_pins>;
+	status = "okay";
+
+	flash: spinand@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "spi-nand";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+
+		boot@0 {
+			label = "boot";
+			reg = <0x0000000 0x0100000>;
+		};
+
+		ubi0@100000 {
+			label = "ubi0";
+			reg = <0x0100000 0x0000000>;
+		};
+
+	};
+};
+
+&pio {
+
+	key_pins: key_pins@0 {
+		pins = "PB0", "PB1";
+		function = "gpio_in";
+		bias-pull-up;
+	};
+
+	i2c0_pins: i2c0 {
+		pins = "PB6", "PB7";
+		function = "i2c0";
+	};
+
+	pwm0_pins: pwm0@0 {
+		pins = "PB4";
+		function = "pwm0";
+	};
+
+	pwm1_pins: pwm1@0 {
+		pins = "PB5";
+		function = "pwm1";
+	};
+
+	uart0_pins: uart0@0 {
+		pins = "PB8", "PB9";
+		function = "uart0";
+	};
+
+	uart1_pins: uart1@0 {
+		pins = "PE21", "PE22";
+		function = "uart1";
+		bias-pull-up;
+	};
+
+	uart2_pins: uart2@0 {
+		pins = "PB0", "PB1";
+		function = "uart2";
+		bias-pull-up;
+	};
+
+	lcd_rgb666_pins_a: lcd-rgb666-pe {
+		pins = "PE0", "PE1", "PE2", "PE3", "PE4", "PE5",
+				"PE6", "PE7", "PE8", "PE9", "PE10", "PE11",
+				"PE12", "PE13", "PE14", "PE15", "PE16", "PE17",
+				"PE18", "PE19", "PE23", "PE24";
+		function = "lcd";
+	};
+
+	mmc0_pins_a: mmc0@0 {
+		pins = "PF0", "PF1", "PF2", "PF3",
+				"PF4", "PF5";
+		function = "mmc0";
+		drive-strength = <30>;
+		bias-pull-up;
+	};
+
+	mmc1_pins: mmc1 {
+		pins = "PG0", "PG1", "PG2", "PG3",
+				"PG4", "PG5";
+		function = "mmc1";
+		drive-strength = <30>;
+		bias-pull-up;
+	};
+
+	spi0_pins: spi0 {
+		pins = "PC0", "PC1", "PC2", "PC3";
+		function = "spi0";
+	};
+
+};

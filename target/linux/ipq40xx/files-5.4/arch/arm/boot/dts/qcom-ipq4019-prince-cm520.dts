@@ -6,8 +6,13 @@
 #include <dt-bindings/soc/qcom,tcsr.h>
 
 / {
+<<<<<<< HEAD
+	model = "Prince CM520-79F";
+	compatible = "prince,cm520-79f";
+=======
 	model = "MobiPromo CM520-79F";
 	compatible = "mobipromo,cm520-79f";
+>>>>>>> upstream/master
 
 	aliases {
 		led-boot = &led_sys;
@@ -16,6 +21,13 @@
 		led-upgrade = &led_sys;
 	};
 
+<<<<<<< HEAD
+	chosen {
+		bootargs-append = " ubi.block=0,1 root=/dev/ubiblock0_1";
+	};
+
+=======
+>>>>>>> upstream/master
 	soc {
 		rng@22000 {
 			status = "okay";
@@ -25,8 +37,11 @@
 			status = "okay";
 			pinctrl-0 = <&mdio_pins>;
 			pinctrl-names = "default";
+<<<<<<< HEAD
+=======
 			reset-gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
 			reset-delay-us = <1000>;
+>>>>>>> upstream/master
 		};
 
 		ess-psgmii@98000 {
@@ -110,7 +125,10 @@
 	led_spi {
 		compatible = "spi-gpio";
 		#address-cells = <1>;
+<<<<<<< HEAD
+=======
 		ranges;
+>>>>>>> upstream/master
 
 		sck-gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
 		mosi-gpios = <&tlmm 36 GPIO_ACTIVE_HIGH>;
@@ -285,7 +303,11 @@
 			};
 
 			partition@b80000 {
+<<<<<<< HEAD
+				label = "rootfs";
+=======
 				label = "ubi";
+>>>>>>> upstream/master
 				reg = <0xb80000 0x7480000>;
 			};
 		};
@@ -309,6 +331,16 @@
 			function = "mdc";
 			bias-pull-up;
 		};
+<<<<<<< HEAD
+
+		pin_rst {
+			pins = "gpio47";
+			function = "gpio";
+			bias-disable;
+			output-high;
+		};
+=======
+>>>>>>> upstream/master
 	};
 
 	nand_pins: nand_pins {

@@ -6,18 +6,14 @@
 #include <dt-bindings/soc/qcom,tcsr.h>
 
 / {
-	model = "Prince CM520-79F";
-	compatible = "prince,cm520-79f";
+	model = "MobiPromo CM520-79F";
+	compatible = "mobipromo,cm520-79f";
 
 	aliases {
 		led-boot = &led_sys;
 		led-failsafe = &led_sys;
 		led-running = &led_sys;
 		led-upgrade = &led_sys;
-	};
-
-	chosen {
-		bootargs-append = " ubi.block=0,1 root=/dev/ubiblock0_1";
 	};
 
 	soc {
@@ -29,6 +25,8 @@
 			status = "okay";
 			pinctrl-0 = <&mdio_pins>;
 			pinctrl-names = "default";
+			reset-gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
+			reset-delay-us = <1000>;
 		};
 
 		ess-psgmii@98000 {
@@ -112,6 +110,7 @@
 	led_spi {
 		compatible = "spi-gpio";
 		#address-cells = <1>;
+		ranges;
 
 		sck-gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
 		mosi-gpios = <&tlmm 36 GPIO_ACTIVE_HIGH>;
@@ -286,7 +285,7 @@
 			};
 
 			partition@b80000 {
-				label = "rootfs";
+				label = "ubi";
 				reg = <0xb80000 0x7480000>;
 			};
 		};
@@ -309,13 +308,6 @@
 			pins = "gpio7";
 			function = "mdc";
 			bias-pull-up;
-		};
-
-		pin_rst {
-			pins = "gpio47";
-			function = "gpio";
-			bias-disable;
-			output-high;
 		};
 	};
 

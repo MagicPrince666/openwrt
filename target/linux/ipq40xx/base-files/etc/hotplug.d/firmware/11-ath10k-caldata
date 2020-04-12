@@ -53,6 +53,7 @@ case "$FIRMWARE" in
 	linksys,ea6350v3 |\
 	prince,cm520-79f |\
 	p2w,r619ac |\
+	mobipromo,cm520-79f |\
 	qcom,ap-dk01.1-c1)
 		caldata_extract "ART" 0x1000 0x2f20
 		;;
@@ -81,6 +82,7 @@ case "$FIRMWARE" in
 		/usr/bin/fritz_cal_extract -i 1 -s 0x3C800 -e 0x207 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1") || \
 		/usr/bin/fritz_cal_extract -i 1 -s 0x3D000 -e 0x207 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1")
 		;;
+	cellc,rtl30vw |\
 	compex,wpj419 |\
 	compex,wpj428 |\
 	engenius,eap1300 |\
@@ -136,6 +138,7 @@ case "$FIRMWARE" in
 	linksys,ea6350v3 |\
 	prince,cm520-79f |\
 	p2w,r619ac |\
+	mobipromo,cm520-79f |\
 	qcom,ap-dk01.1-c1)
 		caldata_extract "ART" 0x5000 0x2f20
 		;;
@@ -164,6 +167,7 @@ case "$FIRMWARE" in
 		/usr/bin/fritz_cal_extract -i 1 -s 0x3D000 -e 0x208 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1") || \
 		/usr/bin/fritz_cal_extract -i 1 -s 0x3C000 -e 0x208 -l 12064 -o /lib/firmware/$FIRMWARE $(find_mtd_chardev "urlader1")
 		;;
+	cellc,rtl30vw |\
 	compex,wpj419 |\
 	compex,wpj428 |\
 	engenius,eap1300 |\

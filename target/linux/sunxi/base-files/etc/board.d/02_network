@@ -18,6 +18,9 @@ case "$(board_name)" in
 "xunlong,orangepi-r1")
 	ucidef_set_interfaces_lan_wan "eth0" "eth1"
 	;;
+"licheepi,licheepi-zero")
+	ucidef_set_interface_lan 'eth0 usb0'
+	;;
 *)
 	ucidef_set_interface_lan 'eth0'
 	;;
