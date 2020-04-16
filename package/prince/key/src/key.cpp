@@ -43,7 +43,7 @@ int main(void)
                     printf("key %d \n", t.code);
                     if(t.code == KEY_POWER) {
 			printf("Wifi restore factory\n");
-                        restore_factory();
+                        //restore_factory();
 			//printf("Wifi restore factory\n");
                         //break;
                     }

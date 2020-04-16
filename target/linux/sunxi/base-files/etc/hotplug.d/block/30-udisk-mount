@@ -1,0 +1,26 @@
+#!/bin/sh
+
+case "$ACTION" in
+add)
+for i in $(ls /dev/ | grep 'sd[a-z][1-9]')
+do
+mkdir -p /tmp/mnt/$i
+mount -o iocharset=utf8,rw /dev/$i /tmp/mnt/$i
+if [ "$?" -ne 0 ];then
+mount -o rw /dev/$i /tmp/mnt/$i
+if [ ! -f /tmp/mnt/$i/xag/update.sh];then
+  echo "no update file" > /dev/kmsg
+else
+  echo "get update file" > /dev/kmsg
+  sh /tmp/mnt/$i/xag/update.sh
+fi
+fi
+done;;
+remove)
+MOUNT=`mount | grep -o '/tmp/mnt/sd[a-z][1-9]'`
+for i in $MOUNT
+do
+umount $i
+done
+;;
+esac
