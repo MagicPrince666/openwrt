@@ -1,10 +1,10 @@
 #!/bin/sh
 
 #WLAN=$1
-WLAN=wlan0
+WLAN=wlan1
 
-#BAND="5G"
-BAND="2G"
+BAND="5G"
+#BAND="2G"
 
 CHANNEL2G="11"
 CHANNEL5G="149"

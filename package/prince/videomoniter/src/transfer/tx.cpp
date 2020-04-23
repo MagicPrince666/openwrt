@@ -46,7 +46,6 @@
 #include <pthread.h>
 #include <time.h>
 #include <signal.h>
-//#include <execinfo.h>
 
 #include "fec.h"
 

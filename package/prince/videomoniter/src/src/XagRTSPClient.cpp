@@ -515,7 +515,6 @@ void shutdownStream(RTSPClient* rtspClient, int exitCode) {
     XagRtsp::aoa_ring.destroy(XagRtsp::aoa_buffer);
     XagRtsp::aoa_buffer = NULL;
     //exit(exitCode);
-    //pthread_kill(rtsp_threadId, SIGUSR1);
     pthread_exit(NULL);
   }
 }
@@ -587,10 +586,7 @@ void DummySink::afterGettingFrame(void* clientData, unsigned frameSize, unsigned
   sink->afterGettingFrame(frameSize, numTruncatedBytes, presentationTime, durationInMicroseconds);
 }
 
-// If you don't want to see debugging output for each received frame, then comment out the following line:
-//#define DEBUG_PRINT_EACH_RECEIVED_FRAME 1
-
-int xag_cnt = 0;
+//int xag_cnt = 0;
 uint32_t *tempcmd;
 
 
@@ -620,39 +616,6 @@ void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes
 tempcmd = (uint32_t *)fReceiveBuffer;
 *tempcmd = 0x00000001;
 frameSize += 4;
-
-#if 0
-if(frameSize < 4 + 4)  {
-  //static unsigned last_usec;
-  static unsigned last_localusec;
-  static unsigned last_localsec;
-  struct timeval stamp;
-  gettimeofday(&stamp, NULL);
-  if(!(stamp.tv_sec - last_localsec))
-    printf("local time %.3f s\n", (double)(stamp.tv_usec - last_localusec)/1000000.0);
-  else printf("local time %.3f s\n", (double)(1000000 + stamp.tv_usec - last_localusec)/1000000.0);
-  //printf("time %d\n", presentationTime.tv_usec - last_usec);
-  last_localusec = stamp.tv_usec;
-  last_localsec = stamp.tv_sec;
-  //last_usec = presentationTime.tv_usec;
-}
-#endif
-
-#if 0
-//printf("frame %x\n",fReceiveBuffer[4]);
-if((fReceiveBuffer[4] & 0x0f) == 0x05) {
-  static uint32_t timer = 0;
-  uint32_t s32ret = 0;
-  struct timeval stamp;
-  gettimeofday(&stamp, NULL);
-  s32ret =stamp.tv_sec*1000 + stamp.tv_usec/1000;
-  int ret = s32ret - timer;
-  if(ret > 350)
-    printf("IDR %ld ms\n", ret);
-  timer = s32ret;
-}
-#endif
-//printf("frameSize = %d\n", frameSize);
 #endif
 XagRtsp::live_cnt += frameSize;//统计接收到的包
 //copy h264 stream to usb cdc or aoa
@@ -664,38 +627,13 @@ XagRtsp::live_cnt += frameSize;//统计接收到的包
   }
 
   if(XagRtsp::aoa_buffer != NULL){
-#if 0
-    int free_buf = 0,j = 0;
-    do
-    {
-      free_buf = aoa_ring.overage(aoa_buffer);
-      usleep(1000);
-      j++;
-      if(j >= 500)
-      {
-        j = 0;
-        printf("free buffer %d\n",free_buf);
-        if(free_buf < frameSize)aoa_ring.Reset(aoa_buffer);
-      }
-    }while(free_buf < frameSize);
-    aoa_ring.write(aoa_buffer, (uint8_t*)fReceiveBuffer, frameSize);//copy to ffmpeg
 
-#else
     if(XagRtsp::aoa_ring.overage(XagRtsp::aoa_buffer) < frameSize){
       XagRtsp::aoa_ring.Reset(XagRtsp::aoa_buffer);
     }
     XagRtsp::aoa_ring.write(XagRtsp::aoa_buffer, (uint8_t*)fReceiveBuffer, frameSize);//copy to ffmpeg
-#endif
-#if 0
-      xag_cnt++;
-      if(xag_cnt >= 50){
-        xag_cnt = 0;
-        printf("%d bytes\n", frameSize);
-      }
-#endif
-  }
 
-  //sleep(10000);
+  }
   // Then continue, to request the next frame of data:
   continuePlaying();
 }
