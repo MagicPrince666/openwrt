@@ -496,7 +496,7 @@ define Device/prince_cm520-79f
 	$(call Device/UbiFit)
 	DEVICE_VENDOR := Prince
 	DEVICE_MODEL := CM520-79F
-	DEVICE_DTS := qcom-ipq4019-cm520-79f
+	DEVICE_DTS := qcom-ipq4019-prince-cm520
 	BLOCKSIZE := 128k
 	PAGESIZE := 2048
 	DEVICE_PACKAGES := ipq-wifi-mobipromo_cm520-79f kmod-usb-ledtrig-usbport \
