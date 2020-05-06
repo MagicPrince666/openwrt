@@ -52,9 +52,6 @@
 #include "lib.h"
 #include "wifibroadcast.h"
 
-//#include "H264_UVC_TestAP.h"
-//#include "v4l2uvc.h"
-//#include "h264_xu_ctrls.h"
 #include "ringbuffer.h"
 #include "XagRTSPClient.h"
 
@@ -62,19 +59,11 @@
 #define MAX_USER_PACKET_LENGTH 1450
 #define MAX_DATA_OR_FEC_PACKETS_PER_BLOCK 32
 
-#define FIFO_NAME "/tmp/fifo%d"
 #define MAX_FIFOS 8
 
 RingBuffer ring;
 bool start = false;
-/*
-typedef struct {
-	int seq_nr;
-	int fd;
-	int curr_pb;
-	packet_buffer_t *pbl;
-} fifo_t;
-*/
+
 /* this is the template radiotap header we send packets out with */
 
 static const u8 u8aRadiotapHeader[] = {
@@ -105,30 +94,30 @@ static u8 u8aIeeeHeader[] = {
 
 int flagHelp = 0;
 
-// static void _signal_handler(int signum)  
-// {  
-//     void *array[10];  
-//     size_t size;  
-//     char **strings;  
-//     size_t i;  
+#if 0
+static void _signal_handler(int signum)  
+{  
+    void *array[10];  
+    size_t size;  
+    char **strings;  
+    size_t i;  
   
-//     signal(signum, SIG_DFL); /* 还原默认的信号处理handler */  
+    signal(signum, SIG_DFL); /* 还原默认的信号处理handler */  
   
-//     size = backtrace (array, 10);  
-//     strings = (char **)backtrace_symbols (array, size);  
+    size = backtrace (array, 10);  
+    strings = (char **)backtrace_symbols (array, size);  
   
-//     fprintf(stderr, "widebright received SIGSEGV! Stack trace:\n");  
-//     for (i = 0; i < size; i++) {  
-//         fprintf(stderr, "%ld %s \n",i,strings[i]);  
-//     }  
+    fprintf(stderr, "widebright received SIGSEGV! Stack trace:\n");  
+    for (i = 0; i < size; i++) {  
+        fprintf(stderr, "%ld %s \n",i,strings[i]);  
+    }  
       
-//     free (strings);  
-//     exit(1);  
-// } 
+    free (strings);  
+    exit(1);  
+} 
+#endif
 
-
-void
-usage(void)
+void usage(void)
 {
 	printf(
 	    "(c)2015 befinitiv. Based on packetspammer by Andy Green.  Licensed under GPL2\n"
@@ -143,14 +132,14 @@ usage(void)
 		"-s <stream> If <stream> is > 1 then the parameter changes \"tx\" \
 		input from stdin to named fifos. \
 		Each fifo transports a stream over a different port \
-		(starting at -p port and incrementing). Fifo names are \"%s\". (default 1)\n"
+		(starting at -p port and incrementing). Fifo names are (default 1)\n"
 	    "Example:\n"
 	    "  ifconfig wlan0 down\n"
 	    "  iw dev wlan0 set monitor otherbss fcsfail\n"
 	    "  ifconfig wlan0 up\n"
 		"  iwconfig wlan0 channel 13\n"
 	    "  tx wlan0        Reads data over stdin and sends it out over wlan0\n"
-	    "\n", MAX_USER_PACKET_LENGTH, MAX_USER_PACKET_LENGTH, FIFO_NAME);
+	    "\n", MAX_USER_PACKET_LENGTH, MAX_USER_PACKET_LENGTH);
 	exit(1);
 }
 
@@ -172,21 +161,7 @@ int packet_header_init(uint8_t *packet_header) {
 			//determine the length of the header
 			return pu8 - packet_header;
 }
-/*
-void fifo_init(fifo_t *fifo, int fifo_count, int block_size) {
-		int j;
 
-		fifo->seq_nr = 0;
-		fifo->fd = -1;
-		fifo->curr_pb = 0;
-		fifo->pbl = lib_alloc_packet_buffer_list(block_size, MAX_PACKET_LENGTH);
-
-		//prepare the buffers with headers
-		for(j=0; j<block_size; ++j) {
-			fifo->pbl[j].len = 0;
-		}
-}
-*/
 void pb_transmit_packet(pcap_t *ppcap, int seq_nr, uint8_t *packet_transmit_buffer, int packet_header_len, const uint8_t *packet_data, int packet_length) {
     //add header outside of FEC
     wifi_packet_header_t *wph = (wifi_packet_header_t*)(packet_transmit_buffer + packet_header_len);
@@ -203,9 +178,6 @@ void pb_transmit_packet(pcap_t *ppcap, int seq_nr, uint8_t *packet_transmit_buff
     }
 }
 
-
-
-
 void pb_transmit_block(packet_buffer_t *pbl, pcap_t *ppcap, int *seq_nr, int port, int packet_length, uint8_t *packet_transmit_buffer, int packet_header_len, int data_packets_per_block, int fec_packets_per_block, int transmission_count) {
 	int i;
 	uint8_t *data_blocks[MAX_DATA_OR_FEC_PACKETS_PER_BLOCK];
@@ -216,7 +188,6 @@ void pb_transmit_block(packet_buffer_t *pbl, pcap_t *ppcap, int *seq_nr, int por
 	for(i=0; i<data_packets_per_block; ++i) {
 		data_blocks[i] = pbl[i].data;
 	}
-
 
 	if(fec_packets_per_block) {
 		for(i=0; i<fec_packets_per_block; ++i) {
@@ -229,7 +200,6 @@ void pb_transmit_block(packet_buffer_t *pbl, pcap_t *ppcap, int *seq_nr, int por
 	uint8_t *pb = packet_transmit_buffer;
 	set_port_no(pb, port);
 	pb += packet_header_len;
-
 
 	int x;
 	for(x=0; x<transmission_count; ++x) {
@@ -254,13 +224,10 @@ void pb_transmit_block(packet_buffer_t *pbl, pcap_t *ppcap, int *seq_nr, int por
 
 	*seq_nr += data_packets_per_block + fec_packets_per_block;
 
-
-
 	//reset the length back
 	for(i=0; i< data_packets_per_block; ++i) {
 			pbl[i].len = 0;
 	}
-
 }
 
 
@@ -285,13 +252,10 @@ void *Transfer_Encode_Thread(void *arg)
 	time_t start_time;
     uint8_t packet_transmit_buffer[MAX_PACKET_LENGTH];
 	size_t packet_header_length = 0;
-	//fifo_t fifo;
 
 	printf("Raw data transmitter (c) 2015 befinitiv  GPL2\n");
 
     packet_header_length = packet_header_init(packet_transmit_buffer);
-	//fifo_init(&fifo, param_fifo_count, param_data_packets_per_block);
-	
 
 	//initialize forward error correction
 	fec_init();
@@ -343,15 +307,9 @@ void *Transfer_Encode_Thread(void *arg)
 
 		//cycle through all fifos and look for new data
 		for(i=0; i<param_fifo_count && ret; ++i) {
-			//if(!FD_ISSET(fifo[i].fd, &rdfs)) {
-			//	continue;
-			//}
 
 			ret--;
-
-			//packet_buffer_t *pb = fifo[i].pbl + fifo[i].curr_pb;
-			
-			
+					
             //if the buffer is fresh we add a payload header
 			if(pb->len == 0) {
                 pb->len += sizeof(payload_header_t); //make space for a length field (will be filled later)
@@ -359,10 +317,8 @@ void *Transfer_Encode_Thread(void *arg)
 
 			//read the data
 			int inl = XagRtsp::aoa_ring.read(XagRtsp::aoa_buffer, pb->data + pb->len, param_packet_length - pb->len);
-			//read(fifo[i].fd, pb->data + pb->len, param_packet_length - pb->len);
 			if(inl < 0 || inl > param_packet_length-pb->len){
 				perror("reading stdin");
-				//return 1;
 				continue;
 			}
 
@@ -380,23 +336,12 @@ void *Transfer_Encode_Thread(void *arg)
                 payload_header_t *ph = (payload_header_t*)pb->data;
                 ph->data_length = pb->len - sizeof(payload_header_t); //write the length into the packet. this is needed since with fec we cannot use the wifi packet lentgh anymore. We could also set the user payload to a fixed size but this would introduce additional latency since tx would need to wait until that amount of data has been received
                 pcnt++;
-#if 0
-				//check if this block is finished
-				if(fifo[i].curr_pb == param_data_packets_per_block-1) {
-                    pb_transmit_block(fifo[i].pbl, ppcap, &(fifo[i].seq_nr), i+param_port, param_packet_length, packet_transmit_buffer, packet_header_length, param_data_packets_per_block, param_fec_packets_per_block, param_transmission_count);
-					fifo[i].curr_pb = 0;
-				}
-				else {
-					fifo[i].curr_pb++;
-				}
-#endif
+
 				//check if this block is finished
 				pb_transmit_block(pb, ppcap, &seq_nr, param_port, \
 					param_packet_length, packet_transmit_buffer, \
 					packet_header_length, param_data_packets_per_block, \
 					param_fec_packets_per_block, param_transmission_count);
-
-
 			}
 		}
 
