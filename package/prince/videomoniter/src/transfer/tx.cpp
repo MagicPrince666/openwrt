@@ -347,7 +347,8 @@ void *Transfer_Encode_Thread(void *arg)
 
 
 		if(pcnt % 128 == 0) {
-			printf("%d data packets sent (interface rate: %.3f)\n", pcnt, 1.0 * pcnt / param_data_packets_per_block * (param_data_packets_per_block + param_fec_packets_per_block) / (time(NULL) - start_time));
+			if(pcnt)
+				printf("%d data packets sent (interface rate: %.3f)\n", pcnt, 1.0 * pcnt / param_data_packets_per_block * (param_data_packets_per_block + param_fec_packets_per_block) / (time(NULL) - start_time));
 		}
 
 	}
