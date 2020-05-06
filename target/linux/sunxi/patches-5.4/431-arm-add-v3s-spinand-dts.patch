@@ -7,7 +7,7 @@ Index: linux-5.4.32/arch/arm/boot/dts/Makefile
  	sun8i-v3s-licheepi-zero.dtb \
  	sun8i-v3s-licheepi-zero-dock.dtb \
 -	sun8i-v40-bananapi-m2-berry.dtb
-+	sun8i-v40-bananapi-m2-berry.dtbi \
++	sun8i-v40-bananapi-m2-berry.dtb \
 +	sun8i-v3s-rawspinandaccessuart2.dtb \
 +	sun8i-v3s-licheepi-zero-spinand.dtb \
 +	sun8i-v3s-dolphinpi.dtb

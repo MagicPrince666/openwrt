@@ -265,12 +265,12 @@
 		function = "gpio_in";
 		bias-pull-up;
 	};
-
+/*
 	i2c0_pins: i2c0 {
 		pins = "PB6", "PB7";
 		function = "i2c0";
 	};
-
+*/
 	pwm0_pins: pwm0@0 {
 		pins = "PB4";
 		function = "pwm0";
@@ -313,7 +313,7 @@
 		drive-strength = <30>;
 		bias-pull-up;
 	};
-
+/*
 	mmc1_pins: mmc1 {
 		pins = "PG0", "PG1", "PG2", "PG3",
 				"PG4", "PG5";
@@ -326,5 +326,5 @@
 		pins = "PC0", "PC1", "PC2", "PC3";
 		function = "spi0";
 	};
-
+*/
 };

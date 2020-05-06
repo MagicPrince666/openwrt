@@ -149,7 +149,7 @@ void * XagRtsp::rtsp_thead (void *arg) {
   //char rtsp_url[128] = {0};
   struct url_date *rtsp_url = (struct url_date *)malloc(sizeof(struct url_date) + 70*sizeof(char));
   rtsp_url->len = 70;
-  sprintf(rtsp_url->url, "rtsp://192.168.1.202:554/user=admin&password=&channel=1&stream=1.sdp?");
+  sprintf(rtsp_url->url, "rtsp://192.168.3.239:554/user=admin&password=&channel=1&stream=1.sdp?");
 	printf("rtsp url: %s\n",rtsp_url->url);
   
   // There are argc-1 URLs: argv[1] through argv[argc-1].  Open and start streaming each one:
