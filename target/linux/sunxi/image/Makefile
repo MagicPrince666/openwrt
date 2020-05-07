@@ -58,6 +58,10 @@ define Device/Default
   SUNXI_DTS = $$(SUNXI_DTS_DIR)$$(SOC)-$(lastword $(subst _, ,$(1)))
 endef
 
+ifeq ($(SUBTARGET),arm9)
+include arm9.mk
+endif
+
 ifeq ($(SUBTARGET),cortexa7)
 include cortex-a7.mk
 endif

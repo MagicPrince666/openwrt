@@ -299,6 +299,14 @@ define U-Boot/GenericV3sBoard_SPINAND_UART2
   BUILD_DEVICES:=sun8i-v3s-rawspinandaccessuart2
 endef
 
+define U-Boot/licheepi_nano
+  BUILD_SUBTARGET:=arm9
+  NAME:=Lichee Pi Nano
+  BUILD_DEVICES:=suniv-f1c100s-licheepi-nano
+  UENV:=licheepi-nano
+endef
+
+
 UBOOT_TARGETS := \
 	a64-olinuxino \
 	a64-olinuxino-emmc \
@@ -342,7 +350,8 @@ UBOOT_TARGETS := \
   LicheePi_Zero \
   LicheePi_Zero_SPINAND \
   DolphinPi \
-  GenericV3sBoard_SPINAND_UART2
+  GenericV3sBoard_SPINAND_UART2 \
+  licheepi_nano
 
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
