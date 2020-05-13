@@ -233,6 +233,10 @@
 				label = "u-boot-env";
 				reg = <0x0E0000 0x020000>;
 			};
+			partition@100000 {
+				label = "ubi";
+				reg = <0x100000 0x100000>;
+			};
 
 		};
 	};
@@ -242,6 +246,7 @@
     pinctrl-names = "default";
     pinctrl-0 = <&spi1_pins>;
     status = "okay";
+
 	spidev@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;

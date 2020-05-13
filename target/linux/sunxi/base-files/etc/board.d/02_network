@@ -18,8 +18,11 @@ olimex,a20-olinuxino-micro)
 xunlong,orangepi-r1)
 	ucidef_set_interfaces_lan_wan "eth0" "eth1"
 	;;
-"licheepi,licheepi-zero")
+licheepi,licheepi-zero)
 	ucidef_set_interface_lan 'eth0 usb0'
+	;;
+xunlong,orangepi-pc2)
+	ucidef_set_interface_wan 'eth0'
 	;;
 *)
 	ucidef_set_interface_lan "eth0"
