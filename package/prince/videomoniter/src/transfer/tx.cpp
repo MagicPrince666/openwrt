@@ -447,6 +447,8 @@ int main(int argc, char *argv[])
 
 	// open the interface in pcap
 	szErrbuf[0] = '\0';
+	//printf("prince debug %s\n", argv[optind]);
+	//argv[optind] 网卡名称 wlanX
 	ppcap = pcap_open_live(argv[optind], 800, 1, 20, szErrbuf);
 	if (ppcap == NULL) {
 		fprintf(stderr, "Unable to open interface %s in pcap: %s\n",

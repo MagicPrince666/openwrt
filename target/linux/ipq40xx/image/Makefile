@@ -510,7 +510,8 @@ define Device/prince_cm520-79f
 	fritz-caldata fritz-tffs-nand kmod-usb-core kmod-usb2 kmod-usb-acm \
   	arptables kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-net-rtl8152 \
   	luci atftp wpad-mesh-openssl libstdcpp usbutils kmod-sdhci kmod-mmc-spi \
-  	kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-usb-storage-extras kmod-usb3
+  	kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-usb-storage-extras kmod-usb3 kmod-video-core \
+	kmod-video-uvc kmod-sound-core kmod-usb-audio
 endef
 TARGET_DEVICES += prince_cm520-79f
 
