@@ -17,7 +17,7 @@ ifconfig $WLAN up
 case $BAND in
   "5G")
       echo "Setting $WLAN to channel $CHANNEL5G"
-#      iw dev $WLAN set bitrates ht-mcs-5 1 sgi-5
+      iw dev $WLAN set bitrates ht-mcs-5 1 sgi-5
       iw dev $WLAN set channel $CHANNEL5G HT40+
       ;;
   "2G")

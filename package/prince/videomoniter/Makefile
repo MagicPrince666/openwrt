@@ -26,6 +26,7 @@ endef
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/video_proxy $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/setwifi.sh $(1)/usr/bin/
 #	$(INSTALL_BIN) $(PKG_BUILD_DIR)/xagaoa $(1)/etc/init.d/
 endef
 
