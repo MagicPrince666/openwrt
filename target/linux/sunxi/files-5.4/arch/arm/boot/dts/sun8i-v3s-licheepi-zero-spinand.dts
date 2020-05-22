@@ -47,7 +47,7 @@
 	aliases {
 		serial0 = &uart0;
 		ethernet0 = &emac;
-		ethernet1 = &esp8089;
+		//ethernet1 = &esp8089;
 		spi0 = &spi0;
 	};
 
@@ -147,12 +147,12 @@
 
 	};
 
-	wifi_pwrseq: wifi_pwrseq {
-		compatible = "mmc-pwrseq-simple";
+	//wifi_pwrseq: wifi_pwrseq {
+	//	compatible = "mmc-pwrseq-simple";
 		//reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; /* PB5 */
 		/* The esp8089 needs 200 ms after driving wifi-en high */
-		post-power-on-delay-ms = <200>;
-	};
+	//	post-power-on-delay-ms = <200>;
+	//};
 };
 
 &pwm {
@@ -217,21 +217,30 @@
 	status = "okay";
 };
 
-&mmc0 { /* WiFi ESP8089 */
+&mmc0 {
 	pinctrl-0 = <&mmc0_pins_a>;
 	pinctrl-names = "default";
-	status = "okay";
+	broken-cd;
 	bus-width = <4>;
-	non-removable;
-	mmc-pwrseq = <&wifi_pwrseq>;
-	/* vmmc-supply = <&reg_dldo1>; */
-
-	esp8089: sdio_wifi@1 {
-		compatible = "esp,esp8089";
-		reg = <1>;
-		esp,crystal-26M-en = <2>;
-	};
+	vmmc-supply = <&reg_vcc3v3>;
+	status = "okay";
 };
+
+//&mmc0 { /* WiFi ESP8089 */
+//	pinctrl-0 = <&mmc0_pins_a>;
+//	pinctrl-names = "default";
+//	status = "okay";
+//	bus-width = <4>;
+//	non-removable;
+//	mmc-pwrseq = <&wifi_pwrseq>;
+//	/* vmmc-supply = <&reg_dldo1>; */
+
+//	esp8089: sdio_wifi@1 {
+//		compatible = "esp,esp8089";
+//		reg = <1>;
+//		esp,crystal-26M-en = <2>;
+//	};
+//};
 
 &spi0 {
 	pinctrl-names = "default";
@@ -320,11 +329,6 @@
 		function = "mmc1";
 		drive-strength = <30>;
 		bias-pull-up;
-	};
-
-	spi0_pins: spi0 {
-		pins = "PC0", "PC1", "PC2", "PC3";
-		function = "spi0";
 	};
 */
 };

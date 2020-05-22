@@ -44,7 +44,6 @@ TARGET_DEVICES += sun8i-v3s-rawspinandaccessuart2
 define Device/sun8i-v3s-licheepi-zero-spinand
   DEVICE_VENDOR := LicheePi
   DEVICE_MODEL := Zero (SPI-NAND)
-  DEVICE_PACKAGES:=kmod-rtc-sunxi
   SUPPORTED_DEVICES:=licheepi,licheepi-zero
   SUNXI_DTS:=sun8i-v3s-licheepi-zero-spinand
 
@@ -67,6 +66,7 @@ define Device/sun8i-v3s-licheepi-zero-spinand
       pad-to $$(CONFIG_SUN8I_V3S_OFFSET_UBI) | \
       append-ubi | \
       gzip
+  DEVICE_PACKAGES := kmod-rtc-sunxi luci usbutils
 endef
 
 TARGET_DEVICES += sun8i-v3s-licheepi-zero-spinand
