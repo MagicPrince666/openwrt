@@ -47,26 +47,66 @@
 	aliases {
 		serial0 = &uart0;
 		ethernet0 = &emac;
-		//ethernet1 = &esp8089;
+		ethernet1 = &esp8089;
 		spi0 = &spi0;
 	};
 
 	chosen {
 		stdout-path = "serial0:115200n8";
 
-		/*fb0: framebuffer@0 {
+		fb0: framebuffer@0 {
 			compatible = "allwinner,simple-framebuffer", "simple-framebuffer";
 			allwinner,pipeline = "de0-lcd0";
 			clocks = <0x2 0x21 0x2 0x23 0x2 0x3f 0x2 0x40>;
 			status = "disabled";
-		}; */
+		}; 
 	};
 
 	soc {
+
 		syscon: syscon@1c00000 {
-			compatible = "allwinner,sun8i-v3s-system-controller",
-			"syscon";
-			reg = <0x01c00000 0x1000>;
+			compatible = "allwinner,sun8i-v3s-system-controller", "allwinner,sun8i-h3-system-control", "syscon";
+			reg = <0x01c00000 0xd0>;
+			#address-cells = <1>;
+			#size-cells = <1>;
+			ranges;
+
+			sram_c: sram@1d00000 {
+				compatible = "mmio-sram";
+				reg = <0x01d00000 0x80000>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+				ranges = <0 0x01d00000 0x80000>;
+
+				ve_sram: sram-section@0 {
+					compatible = "allwinner,sun8i-v3s-sram-c", "allwinner,sun4i-a10-sram-c1";
+					reg = <0x000000 0x80000>;
+				};
+			};
+		};
+
+		cedarx: video-codec@1c0e000 {
+			compatible = "allwinner,sun8i-v3-cedar";
+			reg = <0x01c0e000 0x1000>;
+			clocks = <&ccu CLK_BUS_VE>, <&ccu CLK_VE>, <&ccu CLK_DRAM_VE>;
+			clock-names = "ahb", "mod", "ram";
+			resets = <&ccu RST_BUS_VE>;
+			interrupts = <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+			allwinner,sram = <&ve_sram 1>;
+			status = "disabled";
+		};
+				
+		ion: ion {
+			compatible = "allwinner,sunxi-ion";
+			status = "disabled";
+			heap_cma@0{
+				compatible = "allwinner,cma";
+				heap-name  = "cma";
+				heap-id    = <0x4>;
+				heap-base  = <0x0>;
+				heap-size  = <0x0>;
+				heap-type  = "ion_cma";
+			};
 		};
 
 		emac: ethernet@1c30000 {
@@ -147,12 +187,12 @@
 
 	};
 
-	//wifi_pwrseq: wifi_pwrseq {
-	//	compatible = "mmc-pwrseq-simple";
-		//reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; /* PB5 */
+	wifi_pwrseq: wifi_pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; /* PB5 */
 		/* The esp8089 needs 200 ms after driving wifi-en high */
-	//	post-power-on-delay-ms = <200>;
-	//};
+		post-power-on-delay-ms = <200>;
+	};
 };
 
 &pwm {
@@ -226,21 +266,19 @@
 	status = "okay";
 };
 
-//&mmc0 { /* WiFi ESP8089 */
-//	pinctrl-0 = <&mmc0_pins_a>;
-//	pinctrl-names = "default";
-//	status = "okay";
-//	bus-width = <4>;
-//	non-removable;
-//	mmc-pwrseq = <&wifi_pwrseq>;
-//	/* vmmc-supply = <&reg_dldo1>; */
+&mmc1 { /* WiFi ESP8089 */
+	status = "okay";
+	bus-width = <4>;
+	non-removable;
+	mmc-pwrseq = <&wifi_pwrseq>;
+	/* vmmc-supply = <&reg_dldo1>; */
 
-//	esp8089: sdio_wifi@1 {
-//		compatible = "esp,esp8089";
-//		reg = <1>;
-//		esp,crystal-26M-en = <2>;
-//	};
-//};
+	esp8089: sdio_wifi@1 {
+		compatible = "esp,esp8089";
+		reg = <1>;
+		esp,crystal-26M-en = <2>;
+	};
+};
 
 &spi0 {
 	pinctrl-names = "default";
@@ -280,14 +318,38 @@
 		function = "i2c0";
 	};
 */
-	pwm0_pins: pwm0@0 {
-		pins = "PB4";
-		function = "pwm0";
+	twi1_clk: i2c1 {
+		pins = "PB8";
+		function = "i2c1";
 	};
 
-	pwm1_pins: pwm1@0 {
+	bbpwm_pins: pppwm { /* PWM for BL as BITBANG-PWM */
+		pins = "PB9";
+		function = "gpio_out";
+	};
+
+	wifi_shdn: wifi {
 		pins = "PB5";
-		function = "pwm1";
+		function = "gpio_out";
+	};
+	
+	/* Parallel CSI related */
+	csi1_8bit: csi1-8bit@0 {
+		pins = "PE6","PE7","PE8","PE9","PE10","PE11","PE12","PE13","PE14","PE15";
+		bias-disable;
+		function = "csi";
+	};
+
+	csi1_clk: csi1-clk@0 {
+		pins = "PE0","PE2","PE3";
+		bias-disable;
+		function = "csi";
+	};
+
+	csi1_mclk: csi1-mclk@0 {
+		pins = "PE1";
+		bias-disable;
+		function = "csi";
 	};
 
 	uart0_pins: uart0@0 {
@@ -322,7 +384,7 @@
 		drive-strength = <30>;
 		bias-pull-up;
 	};
-/*
+
 	mmc1_pins: mmc1 {
 		pins = "PG0", "PG1", "PG2", "PG3",
 				"PG4", "PG5";
@@ -330,5 +392,5 @@
 		drive-strength = <30>;
 		bias-pull-up;
 	};
-*/
+
 };

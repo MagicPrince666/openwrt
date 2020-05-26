@@ -1,0 +1,19 @@
+Index: linux-5.4.42/drivers/staging/media/sunxi/Kconfig
+===================================================================
+--- linux-5.4.42.orig/drivers/staging/media/sunxi/Kconfig
++++ linux-5.4.42/drivers/staging/media/sunxi/Kconfig
+@@ -12,5 +12,6 @@ config VIDEO_SUNXI
+ if VIDEO_SUNXI
+ 
+ source "drivers/staging/media/sunxi/cedrus/Kconfig"
++source "drivers/staging/media/sunxi/cedar/Kconfig"
+ 
+ endif
+Index: linux-5.4.42/drivers/staging/media/sunxi/Makefile
+===================================================================
+--- linux-5.4.42.orig/drivers/staging/media/sunxi/Makefile
++++ linux-5.4.42/drivers/staging/media/sunxi/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_VIDEO_SUNXI_CEDRUS)	+= cedrus/
++obj-y += cedar/
