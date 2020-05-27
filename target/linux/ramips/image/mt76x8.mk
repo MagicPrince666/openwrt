@@ -436,6 +436,14 @@ define Device/widora_neo-32m
 endef
 TARGET_DEVICES += widora_neo-32m
 
+define Device/widora_bit5-32m
+  DTS := WIDORA-BIT5-32M
+  IMAGE_SIZE := $(ralink_default_fw_size_32M)
+  DEVICE_TITLE := Widora-BIT5 (32M)
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci
+endef
+TARGET_DEVICES += widora_bit5-32m
+
 define Device/wiznet_wizfi630s
   DTS := WIZFI630S
   IMAGE_SIZE := $(ralink_default_fw_size_32M)
