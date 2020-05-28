@@ -194,13 +194,13 @@
 		post-power-on-delay-ms = <200>;
 	};
 };
-
+/*
 &pwm {
         pinctrl-names = "default";
         pinctrl-0 = <&pwm0_pins>, <&pwm1_pins>;
         status = "okay";
 };
-
+*/
 &ehci0 {
 	status = "okay";
 };
@@ -267,6 +267,8 @@
 };
 
 &mmc1 { /* WiFi ESP8089 */
+	pinctrl-0 = <&mmc1_pins_a>;
+	pinctrl-names = "default";
 	status = "okay";
 	bus-width = <4>;
 	non-removable;
@@ -385,7 +387,7 @@
 		bias-pull-up;
 	};
 
-	mmc1_pins: mmc1 {
+	mmc1_pins_a: mmc1 {
 		pins = "PG0", "PG1", "PG2", "PG3",
 				"PG4", "PG5";
 		function = "mmc1";
