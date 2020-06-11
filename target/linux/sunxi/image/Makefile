@@ -58,24 +58,25 @@ define Device/Default
   SUNXI_DTS = $$(SUNXI_DTS_DIR)$$(SOC)-$(lastword $(subst _, ,$(1)))
 endef
 
-ifeq ($(SUBTARGET),arm9)
-include arm9.mk
-endif
+#ifeq ($(SUBTARGET),arm9)
+#include arm9.mk
+#endif
 
-ifeq ($(SUBTARGET),cortexa7)
-include cortex-a7.mk
-endif
+#ifeq ($(SUBTARGET),cortexa7)
+#include cortex-a7.mk
+#endif
 
-ifeq ($(SUBTARGET),cortexa7v3sspinand)
-include cortex-a7-v3s-spinand.mk
-endif
+#ifeq ($(SUBTARGET),cortexa7v3sspinand)
+#include cortex-a7-v3s-spinand.mk
+#endif
 
-ifeq ($(SUBTARGET),cortexa8)
-include cortex-a8.mk
-endif
+#ifeq ($(SUBTARGET),cortexa8)
+#include cortex-a8.mk
+#endif
 
-ifeq ($(SUBTARGET),cortexa53)
-include cortex-a53.mk
-endif
+#ifeq ($(SUBTARGET),cortexa53)
+#include cortex-a53.mk
+#endif
+include $(SUBTARGET).mk
 
 $(eval $(call BuildImage))
