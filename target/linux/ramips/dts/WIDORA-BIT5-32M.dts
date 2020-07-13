@@ -3,12 +3,86 @@
 #include "WIDORA-NEO.dtsi"
 
 / {
-	compatible = "widora,neo-32m", "widora,neo", "mediatek,mt7628an-soc";
+	compatible = "widora,bit5-32m", "widora,neo", "mediatek,mt7628an-soc";
 	model = "Widora-BIT5 (32M)";
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
 
 	memory@0 {
 		device_type = "memory";
 		reg = <0x0 0x4000000>;
+	};
+
+	pinctrl {
+		state_default: pinctrl0 {
+			gpio {
+				ralink,group = "gpio";
+				ralink,function = "gpio";
+			};
+			perst {
+				ralink,group = "perst";
+				ralink,function = "gpio";
+			};
+			refclk {
+				ralink,group = "refclk";
+				ralink,function = "gpio";
+			};
+			i2s {
+				ralink,group = "i2s";
+				ralink,function = "i2s";
+			};
+			spis {
+				ralink,group = "spis";
+				ralink,function = "gpio";
+			};
+			wled_an {
+				ralink,group = "wled_an";
+				ralink,function = "wled_an";
+			};
+			ephy_p1 {
+				ralink,group = "ephy_p1";
+				ralink,function = "gpio";
+			};
+			ephy_p2 {
+				ralink,group = "ephy_p2";
+				ralink,function = "gpio";
+			};
+			ephy_p3 {
+				ralink,group = "ephy_p3";
+				ralink,function = "gpio";
+			};
+			ephy_p4 {
+				ralink,group = "ephy_p4";
+				ralink,function = "gpio";
+			};
+			wdt {
+				ralink,group = "wdt";
+				ralink,function = "gpio";
+			};
+		};
+	};
+
+	ethernet@10100000 {
+		mtd-mac-address = <&factory 0x28>;
+	};
+
+	sdhci@10130000 {
+		status = "okay";
+		mediatek,cd-low;
+	};
+
+	gpio-keys-polled {
+			compatible = "gpio-keys-polled";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			poll-interval = <20>;
+			wps {
+				label = "reset";
+				gpios = <&gpio1 6 1>;
+				linux,code = <0x211>;
+			};
 	};
 };
 
@@ -22,7 +96,6 @@
 		compatible = "jedec,spi-nor";
 		reg = <0>;
 		spi-max-frequency = <40000000>;
-		m25p,chunked-io = <31>;
 
 		partitions {
 			compatible = "fixed-partitions";
@@ -57,8 +130,20 @@
 	spidev@1 {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "linux,spidev";
+		compatible = "rohm,dh2228fv";
 		reg = <1>;
 		spi-max-frequency = <40000000>;
 	};
+};
+
+&i2c {
+	status = "okay";
+};
+
+&uart1 {
+	status = "okay";
+};
+
+&pwm {
+	status = "okay";
 };

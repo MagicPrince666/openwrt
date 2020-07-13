@@ -80,6 +80,8 @@ detect_mac80211() {
 		channel="11"
 		htmode=""
 		ht_capab=""
+		ssid="prince_wifi_2.4G"
+		key="12345678"
 
 		iw phy "$dev" info | grep -q 'Capabilities:' && htmode=HT20
 
@@ -87,6 +89,7 @@ detect_mac80211() {
 			mode_band="a"
 			channel="36"
 			iw phy "$dev" info | grep -q 'VHT Capabilities' && htmode="VHT80"
+			ssid="prince_wifi_5g"
 		}
 
 		[ -n "$htmode" ] && ht_capab="set wireless.radio${devidx}.htmode=$htmode"
@@ -119,8 +122,9 @@ detect_mac80211() {
 			set wireless.default_radio${devidx}.device=radio${devidx}
 			set wireless.default_radio${devidx}.network=lan
 			set wireless.default_radio${devidx}.mode=ap
-			set wireless.default_radio${devidx}.ssid=OpenWrt
-			set wireless.default_radio${devidx}.encryption=none
+			set wireless.default_radio${devidx}.ssid=${ssid}
+			set wireless.default_radio${devidx}.encryption=psk-mixed+ccmp
+			set wireless.default_radio${devidx}.key=${key:0:8}
 EOF
 		uci -q commit wireless
 
