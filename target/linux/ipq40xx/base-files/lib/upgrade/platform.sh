@@ -66,6 +66,7 @@ platform_do_upgrade() {
 	avm,fritzrepeater-3000 |\
 	prince,cm520-79f |\
 	p2w,r619ac |\
+	buffalo,wtr-m2133hp |\
 	cilab,meshpoint-one |\
 	engenius,eap2200 |\
 	mobipromo,cm520-79f |\
