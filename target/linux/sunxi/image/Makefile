@@ -66,9 +66,11 @@ endef
 #include cortex-a7.mk
 #endif
 
-#ifeq ($(SUBTARGET),cortexa7v3sspinand)
-#include cortex-a7-v3s-spinand.mk
-#endif
+ifeq ($(SUBTARGET),cortexa7v3sspinand)
+include cortex-a7-v3s-spinand.mk
+else
+include $(SUBTARGET).mk
+endif
 
 #ifeq ($(SUBTARGET),cortexa8)
 #include cortex-a8.mk
@@ -77,6 +79,6 @@ endef
 #ifeq ($(SUBTARGET),cortexa53)
 #include cortex-a53.mk
 #endif
-include $(SUBTARGET).mk
+#include $(SUBTARGET).mk
 
 $(eval $(call BuildImage))

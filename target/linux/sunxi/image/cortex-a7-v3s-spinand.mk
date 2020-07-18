@@ -1,4 +1,3 @@
-ifeq ($(SUBTARGET),cortexa7v3sspinand)
 
 define Device/sun8i-v3s-dolphinpi
   DEVICE_VENDOR := Petit-Miner
@@ -6,6 +5,7 @@ define Device/sun8i-v3s-dolphinpi
   DEVICE_PACKAGES := kmod-rtc-sunxi
   SUPPORTED_DEVICES := dolphinpi
   SUNXI_DTS := sun8i-v3s-dolphinpi
+  SOC := sun8i-v3s
 
   KERNEL := kernel-bin | lzma | uImage lzma | sunxi-kernelubifs
   IMAGES := ubispinand.img.gz
@@ -70,5 +70,3 @@ define Device/sun8i-v3s-licheepi-zero-spinand
 endef
 
 TARGET_DEVICES += sun8i-v3s-licheepi-zero-spinand
-
-endif
