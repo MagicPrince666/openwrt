@@ -418,4 +418,21 @@ define Device/zyxel_wre6606
 endef
 TARGET_DEVICES += zyxel_wre6606
 
+define Device/mobipromo_cm520-79f
+	$(call Device/FitzImage)
+	$(call Device/UbiFit)
+	DEVICE_TITLE := MobiPromo CM520-79F
+	#DEVICE_VENDOR := MobiPromo
+	#DEVICE_MODEL := CM520-79F
+	DEVICE_DTS := qcom-ipq4019-cm520-79f
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_PACKAGES := ipq-wifi-mobipromo_cm520-79f kmod-usb-ledtrig-usbport \
+	fritz-caldata fritz-tffs-nand kmod-usb-core kmod-usb2 kmod-usb-acm \
+  	arptables kmod-usb-net kmod-usb-net-asix kmod-usb-net-rndis kmod-usb-net-rtl8152 \
+  	luci atftp wpad-mesh-openssl libstdcpp usbutils kmod-sdhci kmod-mmc-spi \
+  	kmod-fs-ext4 kmod-fs-vfat kmod-fuse kmod-usb-storage-extras kmod-usb3
+endef
+TARGET_DEVICES += mobipromo_cm520-79f
+
 $(eval $(call BuildImage))

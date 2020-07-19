@@ -17,6 +17,11 @@ ipq40xx_setup_interfaces()
 	engenius,ens620ext)
 		ucidef_set_interfaces_lan_wan "eth0" "eth1"
 		;;
+	mobipromo,cm520-79f)
+		ucidef_set_interfaces_lan_wan "eth0 usb0" "eth1"
+		ucidef_add_switch "switch0" \
+			"0u@eth0" "1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "0u@eth1" "5:wan"
+		;;
 	asus,map-ac2200|\
 	openmesh,a42|\
 	openmesh,a62)
@@ -74,6 +79,11 @@ ipq40xx_setup_macs()
 
 	case "$board" in
 	asus,rt-ac58u)
+		CI_UBIPART=UBI_DEV
+		wan_mac=$(mtd_get_mac_binary_ubi Factory 20486)
+		lan_mac=$(mtd_get_mac_binary_ubi Factory 4102)
+		;;
+	mobipromo,cm520-79f)
 		CI_UBIPART=UBI_DEV
 		wan_mac=$(mtd_get_mac_binary_ubi Factory 20486)
 		lan_mac=$(mtd_get_mac_binary_ubi Factory 4102)
