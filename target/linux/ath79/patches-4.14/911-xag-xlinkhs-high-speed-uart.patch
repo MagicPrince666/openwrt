@@ -1,0 +1,17 @@
+Index: linux-4.14.131/drivers/tty/serial/ar933x_uart.c
+===================================================================
+--- linux-4.14.131.orig/drivers/tty/serial/ar933x_uart.c
++++ linux-4.14.131/drivers/tty/serial/ar933x_uart.c
+@@ -289,6 +289,12 @@ static void ar933x_uart_set_termios(stru
+ 	ar933x_uart_rmw_set(up, AR933X_UART_CS_REG,
+ 			    AR933X_UART_CS_HOST_INT_EN);
+ 
++	/* enable TX ready overide */
++	ar933x_uart_rmw_set(up, AR933X_UART_CS_REG, AR933X_UART_CS_TX_READY_ORIDE);
++
++	/* enable RX ready overide */
++	ar933x_uart_rmw_set(up, AR933X_UART_CS_REG, AR933X_UART_CS_RX_READY_ORIDE);	
++
+ 	/* reenable the UART */
+ 	ar933x_uart_rmw(up, AR933X_UART_CS_REG,
+ 			AR933X_UART_CS_IF_MODE_M << AR933X_UART_CS_IF_MODE_S,

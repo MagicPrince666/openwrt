@@ -9,6 +9,10 @@ ath79_setup_interfaces()
 	local board="$1"
 
 	case "$board" in
+	prince,link-8m|\
+	prince,link)
+		ucidef_set_interface_lan "eth0 usb0"
+		;;
 	aruba,ap-105|\
 	avm,fritz300e|\
 	devolo,dvl1200i|\

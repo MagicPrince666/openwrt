@@ -71,6 +71,9 @@ include ./generic.mk
 include ./generic-tp-link.mk
 include ./generic-ubnt.mk
 endif
+ifeq ($(SUBTARGET),prince)
+include ./generic-prince.mk
+endif
 ifeq ($(SUBTARGET),nand)
 include ./nand.mk
 endif
