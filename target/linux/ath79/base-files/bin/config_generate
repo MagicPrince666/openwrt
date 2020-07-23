@@ -83,18 +83,12 @@ generate_network() {
 		set network.$1.type='$type'
 		set network.$1.ifname='$ifname'
 		set network.$1.proto='none'
-		#wwan0
-		set network.wwan0='interface'
-		set network.wwan0.proto='dhcp'
-		set network.wwan0.ifname='wwan0'
-		set network.wwan0.auto='0'
+		#wan
+		set network.wan='interface'
+		set network.wan.proto='dhcp'
+		set network.wan.ifname='wwan0'
+		set network.wan.auto='1'
 		add_list firewall.@zone[1].network='wwan0'
-		#wwan1
-		set network.wwan1='interface'
-		set network.wwan1.proto='dhcp'
-		set network.wwan1.ifname='wwan1'
-		set network.wwan1.auto='0'
-		add_list firewall.@zone[1].network='wwan1'
 	EOF
 
 	[ -n "$macaddr" ] && uci -q batch <<-EOF
