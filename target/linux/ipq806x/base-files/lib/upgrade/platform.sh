@@ -25,6 +25,9 @@ platform_do_upgrade() {
 	zyxel,nbg6817)
 		nand_do_upgrade "$1"
 		;;
+	ruijie,rg-mtfi-m520)
+		ruijie_do_upgrade "$1"
+		;;
 	linksys,ea8500)
 		platform_do_upgrade_linksys "$1"
 		;;
