@@ -51,6 +51,20 @@ define Device/globalscale_mirabox
 endef
 TARGET_DEVICES += globalscale_mirabox
 
+define Device/kobol_helios4
+  DEVICE_VENDOR := Kobol
+  DEVICE_MODEL := Helios4
+  KERNEL_INSTALL := 1
+  KERNEL := kernel-bin
+  DEVICE_PACKAGES := mkf2fs e2fsprogs partx-utils
+  IMAGES := sdcard.img.gz
+  IMAGE/sdcard.img.gz := boot-scr | boot-img-ext4 | sdcard-img-ext4 | gzip | append-metadata
+  SOC := armada-388
+  UBOOT := helios4-u-boot-spl.kwb
+  BOOT_SCRIPT := clearfog
+endef
+TARGET_DEVICES += kobol_helios4
+
 define Device/linksys
   $(Device/NAND-128K)
   DEVICE_VENDOR := Linksys
@@ -94,6 +108,7 @@ define Device/linksys_wrt1900ac-v1
   DEVICE_DTS := armada-xp-linksys-mamba
   DEVICE_PACKAGES += mwlwifi-firmware-88w8864
   KERNEL_SIZE := 3072k
+  DEFAULT := n
 endef
 TARGET_DEVICES += linksys_wrt1900ac-v1
 
@@ -127,6 +142,7 @@ define Device/linksys_wrt32x
   DEVICE_PACKAGES += kmod-btmrvl kmod-mwifiex-sdio mwlwifi-firmware-88w8964
   KERNEL_SIZE := 3072k
   KERNEL := kernel-bin | append-dtb
+  DEFAULT := n
 endef
 TARGET_DEVICES += linksys_wrt32x
 
