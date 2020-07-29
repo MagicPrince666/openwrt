@@ -290,9 +290,8 @@ endef
 TARGET_DEVICES += zyxel_nbg6817
 
 define Device/ruijie_rg-mtfi-m520
-	#DEVICE_VENDOR := Ruijie
-	#DEVICE_MODEL := RG-MTFi-M520
-	#SOC := qcom-ipq8064
+	DEVICE_VENDOR := Ruijie
+	DEVICE_MODEL := RG-MTFi-M520
 	DEVICE_DTS := qcom-ipq8064-rg-mtfi-m520
 	DEVICE_TITLE := Ruijie RG-MTFi-M520
 	KERNEL_SIZE := 4096k
