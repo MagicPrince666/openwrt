@@ -22,6 +22,13 @@ tplink,vr2600v)
 	ucidef_add_switch "switch0" \
 		"1:lan" "2:lan" "3:lan" "4:lan" "6@eth1" "5:wan" "0@eth0"
 	;;
+ruijie,rg-mtfi-m520)
+	hw_mac_addr=$(mtd_get_mac_ascii PRODUCTINFO ethaddr)
+	ucidef_add_switch "switch0" \
+		"1:lan" "6@eth1" "5:wan" "0@eth0"
+	ucidef_set_interface_macaddr "wan" "$hw_mac_addr"
+	ucidef_set_interface_macaddr "lan" "$(macaddr_add $hw_mac_addr 1)"
+	;;
 qcom,ipq8064-ap161)
 	ucidef_set_interface_lan "eth1 eth2"
 	ucidef_add_switch "switch0" \

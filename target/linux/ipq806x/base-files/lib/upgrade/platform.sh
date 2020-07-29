@@ -24,6 +24,9 @@ platform_do_upgrade() {
 	qcom,ipq8064-ap161)
 		nand_do_upgrade "$1"
 		;;
+	ruijie,rg-mtfi-m520)
+		ruijie_do_upgrade "$1"
+		;;
 	zyxel,nbg6817)
 		zyxel_do_upgrade "$1"
 		;;
