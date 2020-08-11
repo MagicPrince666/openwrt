@@ -1,0 +1,40 @@
+#!/bin/sh
+clear
+/sbin/route del -net default 	
+# These are the parameters. Change as needed.
+echo "=============== This is the part 1 of the scripts. ================"
+TELEPHONE=*99#	      # The telephone number for the connection
+ACCOUNT= null			# The account name for logon 
+PASSWORD= null			# The password for this account
+LOCAL_IP=0.0.0.0		# Local IP address if known. Dynamic = 0.0.0.0
+REMOTE_IP=0.0.0.0		# Remote IP address if desired. Normally 0.0.0.0
+NETMASK=255.255.255.0	# The proper netmask if needed
+OPTION_FILE="zte_options"
+DIAL_SCRIPTS_PATH=`pwd`
+DEBUG_STAT="no"
+export TELEPHONE ACCOUNT PASSWORD DIAL_SCRIPTS_PATH DEBUG_STAT
+if [ "$1" = "-d" ]; then
+	DEBUG_STAT="yes"
+	$DIAL_SCRIPTS_PATH/zte_log $0 "DEBUG_STAT = " $DEBUG_STAT
+fi
+
+echo "=============== This is the part 2 of the scripts. ================ "
+
+DIALER_SCRIPT=$DIAL_SCRIPTS_PATH/zte_ppp_dialer
+
+$DIAL_SCRIPTS_PATH/zte_log $0 "DIALER_SCRIPT = " $DIALER_SCRIPT 
+
+if [ -f $DIALER_SCRIPT ]; then
+	if [ -x $DIALER_SCRIPT ]; then
+		$DIAL_SCRIPTS_PATH/zte_log $0 DIALER_SCRIPT "is ok!"
+	else
+		echo $DIALER_SCRIPT": permission limittion" 
+exit 0
+	fi
+else
+	echo "The file" $DIALER_SCRIPT " don't exist in the current directory!"
+	exit 0
+fi
+
+echo " =============== This is the part 3 of the scripts. ================"
+exec /usr/sbin/pppd $LOCAL_IP:$REMOTE_IP file $OPTION_FILE connect $DIALER_SCRIPT
