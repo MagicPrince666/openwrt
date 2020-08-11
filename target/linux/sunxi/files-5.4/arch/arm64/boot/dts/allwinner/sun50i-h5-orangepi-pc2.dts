@@ -67,6 +67,16 @@
 		stdout-path = "serial0:115200n8";
 	};
 
+	clocks {
+		osc40M: osc40M_clk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <0x400000>;
+			clock-accuracy = <50000>;
+			clock-output-names = "osc40M";
+		};
+	};
+
 	connector {
 		compatible = "hdmi-connector";
 		type = "a";
@@ -242,18 +252,52 @@
 	};
 };
 
+&pio {
+	can0_pin_irq: can0_pin_irq@0 {
+		pins = "PA9";
+		function = "irq";
+		bias-pull-up;
+	};
+
+	spi1_pins_cs2: spi1_pins_cs2@0 {
+		pins = "PA21";
+		function = "gpio_in";
+		bias-pull-up;
+	};
+
+	spi1_pins: spi1-pins {
+		pins = "PA15", "PA16", "PA14", "PA13";
+		function = "spi1";
+	};
+};
+
 &spi1 {
+	#address-cells = <1>;
+    #size-cells = <0>;
     pinctrl-names = "default";
-    pinctrl-0 = <&spi1_pins>;
+	spi-num-chipselects = <2>;
+    pinctrl-0 = <&spi1_pins &spi1_pins_cs2>;
     status = "okay";
 
-	spidev@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "linux,spidev";
+	mcp2518fd: mcp2518fd@0 {
 		reg = <0>;
+		compatible = "microchip,mcp2518fd";
+		pinctrl-names = "default";
+		pinctrl-0 = <&can0_pin_irq>;
+		cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>;
+		spi-max-frequency = <20000000>;
+		interrupt-parent = <&pio>;
+		interrupts = <0 9 8>; /* PA9 / IRQ_TYPE_LEVEL_LOW */
+		clocks = <&osc40M>;
+	};
+
+	spidev: spidev@1 {
+		reg = <1>;
+		compatible = "rohm,dh2228fv";
+		cs-gpios = <&pio 0 21 GPIO_ACTIVE_HIGH>;
 		spi-max-frequency = <40000000>;
 	};
+
 };
 
 &uart0 {

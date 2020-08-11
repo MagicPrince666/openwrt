@@ -1,0 +1,21 @@
+Index: linux-5.4.52/drivers/net/can/spi/Kconfig
+===================================================================
+--- linux-5.4.52.orig/drivers/net/can/spi/Kconfig
++++ linux-5.4.52/drivers/net/can/spi/Kconfig
+@@ -15,4 +15,6 @@ config CAN_MCP251X
+ 	  Driver for the Microchip MCP251x and MCP25625 SPI CAN
+ 	  controllers.
+ 
++source "drivers/net/can/spi/mcp25xxfd/Kconfig"
++
+ endmenu
+Index: linux-5.4.52/drivers/net/can/spi/Makefile
+===================================================================
+--- linux-5.4.52.orig/drivers/net/can/spi/Makefile
++++ linux-5.4.52/drivers/net/can/spi/Makefile
+@@ -6,3 +6,5 @@
+ 
+ obj-$(CONFIG_CAN_HI311X)	+= hi311x.o
+ obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
++
++obj-y                           += mcp25xxfd/
