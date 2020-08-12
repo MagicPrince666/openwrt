@@ -9,27 +9,21 @@
 #include "mcp25xxfd.h"
 #include "mcp25xxfd-log.h"
 
-static inline int mcp25xxfd_log_get_index(const struct mcp25xxfd_priv *priv, int n)
-{
-	return n & (ARRAY_SIZE(priv->log) - 1);
-}
-
 struct mcp25xxfd_log *___mcp25xxfd_log(struct mcp25xxfd_priv *priv, const char *func, canid_t can_id)
 {
 	struct mcp25xxfd_log *log;
 	int cnt;
 
-	cnt = mcp25xxfd_log_get_index(priv, atomic_add_return(1, &priv->cnt));
+	cnt = atomic_add_return(1, &priv->cnt);
+	cnt &= ARRAY_SIZE(priv->log) - 1;
 
 	log = &priv->log[cnt];
 	log->func = func;
 	log->can_id = can_id;
 	log->tef_head = priv->tef.head;
 	log->tef_tail = priv->tef.tail;
-	log->tx_head = priv->tx->head;
-	log->tx_tail = priv->tx->tail;
-	log->rx_head = priv->rx[0]->head;
-	log->rx_tail = priv->rx[0]->tail;
+	log->tx_head = priv->tx.head;
+	log->tx_tail = priv->tx.tail;
 	log->flags = 0;
 
 	return log;
@@ -46,47 +40,8 @@ static void mcp25xxfd_log_dump_one(const struct mcp25xxfd_priv *priv, const stru
 	else
 		pr_cont(" ---   ");
 
-	/* RX */
-
-	if (last_log->rx_head != log->rx_head)
-		pr_cont("rx_h=%08x/%02x ", log->rx_head, log->rx_head & (priv->rx[0]->obj_num - 1));
-	else
-		pr_cont("   ---           ");
-
-	if (log->hw_rx_head != -1 &&
-	    last_log->hw_rx_head != log->hw_rx_head)
-		pr_cont("hw_rx_h=%02x ", log->hw_rx_head);
-	else
-		pr_cont("      ---  ");
-
-	if (last_log->rx_tail != log->rx_tail)
-		pr_cont("rx_t=%08x/%02x ", log->rx_tail, log->rx_tail & (priv->rx[0]->obj_num - 1));
-	else
-		pr_cont("   ---           ");
-
-	if (log->hw_rx_tail != -1 &&
-	    last_log->hw_rx_tail != log->hw_rx_tail)
-		pr_cont("hw_rx_t=%02x ", log->hw_rx_tail);
-	else
-		pr_cont("      ---  ");
-
-	if (log->rx_offset != 255 &&
-	    last_log->rx_offset != log->rx_offset)
-		pr_cont("rx_o=%02x ", log->rx_offset);
-	else
-		pr_cont("   ---  ");
-
-	if (log->rx_len != 255 &&
-	    last_log->rx_len != log->rx_len)
-		pr_cont("rx_l=%2d ", log->rx_len);
-	else
-		pr_cont("   ---  ");
-
-
-	/* TEF */
-
 	if (last_log->tef_head != log->tef_head)
-		pr_cont("tef_h=%08x/%02x ", log->tef_head, log->tef_head & (priv->tx->obj_num - 1));
+		pr_cont("tef_h=%08x/%02x ", log->tef_head, log->tef_head & (priv->tx.obj_num - 1));
 	else
 		pr_cont("    ---           ");
 
@@ -97,7 +52,7 @@ static void mcp25xxfd_log_dump_one(const struct mcp25xxfd_priv *priv, const stru
 		pr_cont("       ---  ");
 
 	if (last_log->tef_tail != log->tef_tail)
-		pr_cont("tef_t=%08x/%02x ", log->tef_tail, log->tef_tail & (priv->tx->obj_num - 1));
+		pr_cont("tef_t=%08x/%02x ", log->tef_tail, log->tef_tail & (priv->tx.obj_num - 1));
 	else
 		pr_cont("    ---           ");
 
@@ -107,39 +62,44 @@ static void mcp25xxfd_log_dump_one(const struct mcp25xxfd_priv *priv, const stru
 	else
 		pr_cont("       ---  ");
 
-	/* TX */
-
 	if (last_log->tx_head != log->tx_head)
-		pr_cont("tx_h=%08x/%02x ", log->tx_head, log->tx_head & (priv->tx->obj_num - 1));
+		pr_cont("tx_h=%08x/%02x ", log->tx_head, log->tx_head & (priv->tx.obj_num - 1));
 	else
 		pr_cont("   ---           ");
 
 	if (last_log->tx_tail != log->tx_tail)
-		pr_cont("tx_t=%08x/%02x ", log->tx_tail, log->tx_tail & (priv->tx->obj_num - 1));
+		pr_cont("tx_t=%08x/%02x ", log->tx_tail, log->tx_tail & (priv->tx.obj_num - 1));
 	else
 		pr_cont("   ---           ");
 
-	pr_cont("%s%s%s%s%s\n",
+	pr_cont("%s%s%s\n",
 		log->flags & MCP25XXFD_LOG_STOP ? "s" : " ",
 		log->flags & MCP25XXFD_LOG_WAKE ? "w" : " ",
-		log->flags & MCP25XXFD_LOG_BUSY ? "b" : " ",
-		log->flags & MCP25XXFD_LOG_TXMAB ? "T" : " ",
-		log->flags & MCP25XXFD_LOG_RXMAB ? "R" : " ");
+		log->flags & MCP25XXFD_LOG_BUSY ? "b" : " ");
 }
 
 void mcp25xxfd_log_dump(const struct mcp25xxfd_priv *priv)
 {
-	int index, i;
+	int cnt;
+	int i, n = 0;
 
-	index = atomic_read(&priv->cnt) + 1;
+	cnt = atomic_read(&priv->cnt);
+	cnt &= ARRAY_SIZE(priv->log) - 1;
 
-	for (i = 0; i < ARRAY_SIZE(priv->log); i++) {
-		int index_last;
+	i = cnt;
 
-		index = mcp25xxfd_log_get_index(priv, index);
-		index_last = mcp25xxfd_log_get_index(priv, index - 1);
+	if (cnt == 0) {
+		mcp25xxfd_log_dump_one(priv, &priv->log[ARRAY_SIZE(priv->log) - 2], &priv->log[0], n++);
+		i++;
+	}
 
-		mcp25xxfd_log_dump_one(priv, &priv->log[index_last], &priv->log[index], i);
-		index++;
+	for (/* nix */; i < ARRAY_SIZE(priv->log); i++)
+		mcp25xxfd_log_dump_one(priv, &priv->log[i - 1], &priv->log[i], n++);
+
+	if (cnt) {
+		mcp25xxfd_log_dump_one(priv, &priv->log[ARRAY_SIZE(priv->log) - 2], &priv->log[0], n++);
+		if (cnt > 1)
+			for (i = 1; i < cnt; i++)
+				mcp25xxfd_log_dump_one(priv, &priv->log[i - 1], &priv->log[i], n++);
 	}
 }
