@@ -272,8 +272,6 @@
 	can0_pin_irq: can0_pin_irq {
 		pins = "PA2";
 		function = "irq";
-		drive = <0x0>;
-        pull = <0x1>;
 	};
 
 	spi1_pins_cs1: spi1_pins_cs1 {
@@ -289,8 +287,6 @@
 };
 
 &spi1 {
-	#address-cells = <1>;
-    #size-cells = <0>;
     pinctrl-names = "default";
     pinctrl-0 = <&spi1_pins>, <&spi1_pins_cs1>;
 	spi-num-chipselects = <2>;
@@ -300,24 +296,18 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		reg = <0>;
-		//compatible = "microchip,mcp2517fd";
+		//compatible = "microchip,mcp2518fd";
 		compatible = "microchip,mcp2515";
 		spi-max-frequency = <2000000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&can0_pin_irq>;
-		//cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>;
 		interrupt-parent = <&pio>;
-		interrupts = <0 2 8>; /* PA2 / IRQ_TYPE_LEVEL_LOW */
+		interrupts = <0 2 IRQ_TYPE_EDGE_FALLING>; /* PA2 / IRQ_TYPE_LEVEL_LOW */
 		//clocks = <&osc40M>;
 		clocks = <&osc8M>;
-/*
-		controller-data {
-            cs-setup-clk-count = <0x1e>;
-            cs-hold-clk-count = <0x1e>;
-            rx-clk-tap-delay = <0x1f>;
-            tx-clk-tap-delay = <0x0>;
-        };
-*/
+		vdd-supply = <&reg_vcc3v3>;
+		xceiver-supply = <&reg_vcc3v3>;
 	};
 
 	spidev: spidev@1 {
@@ -326,7 +316,7 @@
 		reg = <1>;
 		compatible = "rohm,dh2228fv";
 		spi-max-frequency = <20000000>;
-		//cs-gpios = <&pio 0 21 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&pio 0 21 GPIO_ACTIVE_HIGH>;
 	};
 
 };
