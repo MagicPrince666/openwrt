@@ -274,10 +274,14 @@
 		function = "irq";
 	};
 
+	can1_pin_irq: can1_pin_irq {
+		pins = "PA9";
+		function = "irq";
+	};
+
 	spi1_pins_cs1: spi1_pins_cs1 {
 		pins = "PA21";
 		function = "gpio_out";
-		bias-pull-up;
 	};
 
 	spi1_pins: spi1-pins {
@@ -287,36 +291,40 @@
 };
 
 &spi1 {
+	#address-cells = <1>;
+	#size-cells = <0>;
     pinctrl-names = "default";
-    pinctrl-0 = <&spi1_pins>, <&spi1_pins_cs1>;
 	spi-num-chipselects = <2>;
+    pinctrl-0 = <&spi1_pins &spi1_pins_cs1>;
+	cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>, <&pio 0 21 GPIO_ACTIVE_HIGH>;
     status = "okay";
 
 	can0: can@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
 		reg = <0>;
-		//compatible = "microchip,mcp2518fd";
-		compatible = "microchip,mcp2515";
-		spi-max-frequency = <2000000>;
+		compatible = "microchip,mcp2517fd";
+		spi-max-frequency = <20000000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&can0_pin_irq>;
-		cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>;
 		interrupt-parent = <&pio>;
-		interrupts = <0 2 IRQ_TYPE_EDGE_FALLING>; /* PA2 / IRQ_TYPE_LEVEL_LOW */
-		//clocks = <&osc40M>;
-		clocks = <&osc8M>;
+		interrupts = <0 2 IRQ_TYPE_LEVEL_LOW>; /* PA2 / IRQ_TYPE_LEVEL_LOW */
+		clocks = <&osc40M>;
 		vdd-supply = <&reg_vcc3v3>;
 		xceiver-supply = <&reg_vcc3v3>;
 	};
 
-	spidev: spidev@1 {
-		#address-cells = <1>;
-		#size-cells = <1>;
+	can1: can@1 {
 		reg = <1>;
-		compatible = "rohm,dh2228fv";
-		spi-max-frequency = <20000000>;
-		cs-gpios = <&pio 0 21 GPIO_ACTIVE_HIGH>;
+		//compatible = "rohm,dh2228fv";
+		//spi-max-frequency = <20000000>;
+		compatible = "microchip,mcp2515";
+		spi-max-frequency = <2000000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&can1_pin_irq>;
+		interrupt-parent = <&pio>;
+		interrupts = <0 9 IRQ_TYPE_LEVEL_LOW>; /* PA9 / IRQ_TYPE_LEVEL_LOW */
+		clocks = <&osc8M>;
+		vdd-supply = <&reg_vcc3v3>;
+		xceiver-supply = <&reg_vcc3v3>;
 	};
 
 };
