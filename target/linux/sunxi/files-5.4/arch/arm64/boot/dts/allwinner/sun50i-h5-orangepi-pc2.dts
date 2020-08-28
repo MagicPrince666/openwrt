@@ -280,8 +280,18 @@
 	};
 
 	spi1_pins_cs1: spi1_pins_cs1 {
-		pins = "PA21";
+		pins = "PA13", "PA21";
 		function = "gpio_out";
+	};
+
+	tcan4x5x_pins: tcan4x5x_pins {
+		pins = "PA8", "PA9";
+		function = "gpio_out";
+	};
+
+	tcan4x5x_pins_in: tcan4x5x_pins_in {
+		pins = "PA7";
+		function = "gpio_in";
 	};
 
 	spi1_pins: spi1-pins {
@@ -293,12 +303,35 @@
 &spi1 {
 	#address-cells = <1>;
 	#size-cells = <0>;
-    pinctrl-names = "default";
+  pinctrl-names = "default";
 	spi-num-chipselects = <2>;
-    pinctrl-0 = <&spi1_pins &spi1_pins_cs1>;
+  pinctrl-0 = <&spi1_pins &spi1_pins_cs1>;
 	cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>, <&pio 0 21 GPIO_ACTIVE_HIGH>;
-    status = "okay";
+  status = "okay";
 
+	tcan4x5x: tcan4x5x@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "ti,tcan4x5x";
+		spi-max-frequency = <10000000>;
+		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&can0_pin_irq &tcan4x5x_pins_in &tcan4x5x_pins>;
+		interrupt-parent = <&pio>;
+		interrupts = <0 2 IRQ_TYPE_LEVEL_LOW>; // PA2 / IRQ_TYPE_LEVEL_LOW
+		device-state-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>;
+		device-wake-gpios = <&pio 0 8 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&pio 0 9 GPIO_ACTIVE_HIGH>;
+		clocks = <&osc40M>;
+	};
+
+	spidev: spidev@1 {
+		reg = <1>;
+		compatible = "rohm,dh2228fv";
+		spi-max-frequency = <20000000>;
+	};
+/*
 	can0: can@0 {
 		reg = <0>;
 		compatible = "microchip,mcp2517fd";
@@ -306,7 +339,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&can0_pin_irq>;
 		interrupt-parent = <&pio>;
-		interrupts = <0 2 IRQ_TYPE_LEVEL_LOW>; /* PA2 / IRQ_TYPE_LEVEL_LOW */
+		interrupts = <0 2 IRQ_TYPE_LEVEL_LOW>; // PA2 / IRQ_TYPE_LEVEL_LOW
 		clocks = <&osc40M>;
 		vdd-supply = <&reg_vcc3v3>;
 		xceiver-supply = <&reg_vcc3v3>;
@@ -321,11 +354,12 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&can1_pin_irq>;
 		interrupt-parent = <&pio>;
-		interrupts = <0 9 IRQ_TYPE_LEVEL_LOW>; /* PA9 / IRQ_TYPE_LEVEL_LOW */
+		interrupts = <0 9 IRQ_TYPE_LEVEL_LOW>; / PA9 / IRQ_TYPE_LEVEL_LOW
 		clocks = <&osc8M>;
 		vdd-supply = <&reg_vcc3v3>;
 		xceiver-supply = <&reg_vcc3v3>;
 	};
+*/
 
 };
 

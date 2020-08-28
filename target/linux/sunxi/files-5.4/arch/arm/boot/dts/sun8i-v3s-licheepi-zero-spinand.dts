@@ -47,19 +47,38 @@
 	aliases {
 		serial0 = &uart0;
 		ethernet0 = &emac;
-		ethernet1 = &esp8089;
 		spi0 = &spi0;
 	};
 
 	chosen {
 		stdout-path = "serial0:115200n8";
 
-		fb0: framebuffer@0 {
+		/*fb0: framebuffer@0 {
 			compatible = "allwinner,simple-framebuffer", "simple-framebuffer";
 			allwinner,pipeline = "de0-lcd0";
 			clocks = <0x2 0x21 0x2 0x23 0x2 0x3f 0x2 0x40>;
 			status = "disabled";
-		}; 
+		}; */
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		blue_led {
+			label = "licheepi:blue:usr";
+			gpios = <&pio 6 1 GPIO_ACTIVE_LOW>; // PG1
+		};
+
+		green_led {
+			label = "licheepi:green:usr";
+			gpios = <&pio 6 0 GPIO_ACTIVE_LOW>; // PG0
+			default-state = "on";
+		};
+
+		red_led {
+			label = "licheepi:red:usr";
+			gpios = <&pio 6 2 GPIO_ACTIVE_LOW>; // PG2
+		};
 	};
 
 	soc {
@@ -194,13 +213,13 @@
 		post-power-on-delay-ms = <200>;
 	};
 };
-/*
+
 &pwm {
         pinctrl-names = "default";
-        pinctrl-0 = <&pwm0_pins>, <&pwm1_pins>;
+        pinctrl-0 = <&pwm1_pins>;
         status = "okay";
 };
-*/
+
 &ehci0 {
 	status = "okay";
 };
@@ -266,14 +285,15 @@
 	status = "okay";
 };
 
-&mmc1 { /* WiFi ESP8089 */
+/*
+&mmc1 { // WiFi ESP8089 
 	pinctrl-0 = <&mmc1_pins_a>;
 	pinctrl-names = "default";
 	status = "okay";
 	bus-width = <4>;
 	non-removable;
 	mmc-pwrseq = <&wifi_pwrseq>;
-	/* vmmc-supply = <&reg_dldo1>; */
+	// vmmc-supply = <&reg_dldo1>;
 
 	esp8089: sdio_wifi@1 {
 		compatible = "esp,esp8089";
@@ -281,10 +301,13 @@
 		esp,crystal-26M-en = <2>;
 	};
 };
+*/
 
 &spi0 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&spi0_pins>;
+	pinctrl-0 = <&spi0_pins &spi0_pins_cs1>;
+	spi-num-chipselects = <2>;
+	cs-gpios = <&pio 2 2 GPIO_ACTIVE_HIGH>, <&pio 6 3 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 
 	flash: spinand@0 {
@@ -303,7 +326,12 @@
 			label = "ubi0";
 			reg = <0x0100000 0x0000000>;
 		};
+	};
 
+	spidev: spidev@1 {
+		reg = <1>;
+		compatible = "rohm,dh2228fv";
+		spi-max-frequency = <40000000>;
 	};
 };
 
@@ -320,6 +348,16 @@
 		function = "i2c0";
 	};
 */
+	spi0_pins: spi0-pins {
+		pins = "PC0", "PC1", "PC2", "PC3";
+		function = "spi0";
+	};
+	
+	spi0_pins_cs1: spi0_pins_cs1 {
+		pins = "PC2", "PG3";
+		function = "gpio_out";
+	};
+
 	twi1_clk: i2c1 {
 		pins = "PB8";
 		function = "i2c1";
@@ -330,9 +368,9 @@
 		function = "gpio_out";
 	};
 
-	wifi_shdn: wifi {
+	pwm1_pins: pwm1_pins {
 		pins = "PB5";
-		function = "gpio_out";
+		function = "pwm";
 	};
 	
 	/* Parallel CSI related */
