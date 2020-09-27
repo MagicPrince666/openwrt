@@ -310,20 +310,20 @@
   status = "okay";
 
 	tcan4x5x: tcan4x5x@0 {
+		compatible = "ti,tcan4x5x";
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "ti,tcan4x5x";
-		spi-max-frequency = <10000000>;
+		spi-max-frequency = <18000000>;
 		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&can0_pin_irq &tcan4x5x_pins_in &tcan4x5x_pins>;
 		interrupt-parent = <&pio>;
-		interrupts = <0 2 IRQ_TYPE_LEVEL_LOW>; // PA2 / IRQ_TYPE_LEVEL_LOW
-		device-state-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>;
+		interrupts = <0 2 GPIO_ACTIVE_LOW>; // PA2 / IRQ_TYPE_LEVEL_LOW
+		device-state-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>; // input
 		device-wake-gpios = <&pio 0 8 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&pio 0 9 GPIO_ACTIVE_HIGH>;
-		clocks = <&osc40M>;
+		//clocks = <&osc40M>;
 	};
 
 	spidev: spidev@1 {
@@ -334,7 +334,7 @@
 /*
 	can0: can@0 {
 		reg = <0>;
-		compatible = "microchip,mcp2517fd";
+		compatible = "microchip,mcp2518fd";
 		spi-max-frequency = <20000000>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&can0_pin_irq>;
@@ -347,8 +347,6 @@
 
 	can1: can@1 {
 		reg = <1>;
-		//compatible = "rohm,dh2228fv";
-		//spi-max-frequency = <20000000>;
 		compatible = "microchip,mcp2515";
 		spi-max-frequency = <2000000>;
 		pinctrl-names = "default";
