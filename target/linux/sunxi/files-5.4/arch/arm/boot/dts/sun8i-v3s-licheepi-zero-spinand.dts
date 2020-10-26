@@ -173,7 +173,7 @@
 				};
 			};
 		};
-
+/*
 		ehci0: usb@01c1a000 {
 			compatible = "allwinner,sun8i-v3s-ehci", "generic-ehci";
 			reg = <0x01c1a000 0x100>;
@@ -195,7 +195,7 @@
 			phy-names = "usb";
 			status = "okay";
 		};
-
+*/
 		pwm: pwm@1c21400 {
 			compatible = "allwinner,sun7i-a20-pwm";
 			reg = <0x01c21400 0xC>;
@@ -205,13 +205,14 @@
 		};
 
 	};
-
+/*
 	wifi_pwrseq: wifi_pwrseq {
 		compatible = "mmc-pwrseq-simple";
-		reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; /* PB5 */
-		/* The esp8089 needs 200 ms after driving wifi-en high */
+		reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; // PB5
+		// The esp8089 needs 200 ms after driving wifi-en high
 		post-power-on-delay-ms = <200>;
 	};
+*/
 };
 
 &pwm {
@@ -219,7 +220,7 @@
         pinctrl-0 = <&pwm1_pins>;
         status = "okay";
 };
-
+/*
 &ehci0 {
 	status = "okay";
 };
@@ -227,15 +228,15 @@
 &ohci0 {
 	status = "okay";
 };
+*/
 
 &usb_otg {
-	dr_mode = "otg"; /* host, periphal, otg */
+	dr_mode = "otg";
 	status = "okay";
 };
 
 &usbphy {
-	/* pinctrl-0 = <&usb0_id_detect_pin>; */
-	usb0_id_det-gpio = <&pio 5 6 GPIO_ACTIVE_HIGH>;
+	usb0_id_det-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 };
 
@@ -304,6 +305,8 @@
 */
 
 &spi0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&spi0_pins &spi0_pins_cs1>;
 	spi-num-chipselects = <2>;
@@ -313,9 +316,10 @@
 	flash: spinand@0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "spi-nand";
 		reg = <0>;
+		compatible = "spi-nand";
 		spi-max-frequency = <50000000>;
+		status = "okay";
 
 		boot@0 {
 			label = "boot";
@@ -332,6 +336,7 @@
 		reg = <1>;
 		compatible = "rohm,dh2228fv";
 		spi-max-frequency = <40000000>;
+		status = "okay";
 	};
 };
 
@@ -424,7 +429,7 @@
 		drive-strength = <30>;
 		bias-pull-up;
 	};
-
+/*
 	mmc1_pins_a: mmc1 {
 		pins = "PG0", "PG1", "PG2", "PG3",
 				"PG4", "PG5";
@@ -432,5 +437,5 @@
 		drive-strength = <30>;
 		bias-pull-up;
 	};
-
+*/
 };
