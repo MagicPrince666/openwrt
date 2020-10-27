@@ -1,0 +1,5 @@
+config IMX8_SD_BOOT_PARTSIZE
+	int "Boot (SD Card) filesystem partition size (in MB)"
+	depends on TARGET_imx8
+	default 20
+

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+case "$ACTION" in
+add)
+for i in $(ls /dev/ | grep 'mmcblk[0-9]p[1-9]')
+do
+mkdir -p /tmp/mnt/$i
+mount -o iocharset=utf8,rw /dev/$i /tmp/mnt/$i
+if [ "$?" -ne 0 ];then
+mount -o rw /dev/$i /tmp/mnt/$i
+fi
+done;;
+remove)
+MOUNT=`mount | grep -o '/tmp/mnt/mmcblk[0-9]p[1-9]'`
+for i in $MOUNT
+do
+umount $i
+done
+;;
+esac
