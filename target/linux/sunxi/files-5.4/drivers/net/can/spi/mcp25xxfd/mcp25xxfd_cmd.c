@@ -253,7 +253,7 @@ static int mcp25xxfd_cmd_readn_crc(struct spi_device *spi, u32 reg,
 	int ret;
 
 	for (; n > 0; n -= 254, reg += 254, data += 254) {
-#if defined(CONFIG_DEBUG_FS)
+#if defined(CONFIG_CAN_MCP25XXFD_DEBUG_FS)
 		priv->stats.spi_crc_read++;
 		if (n > 254)
 			priv->stats.spi_crc_read_split++;
