@@ -321,7 +321,7 @@
 	};
 
 	spi0_pins_cs1: spi0_pins_cs1 {
-		pins = "PC2", "PG3";
+		pins = "PG3";
 		function = "gpio_out";
 	};
 
@@ -496,8 +496,8 @@
 */
 
 &spi0 {
-	//#address-cells = <1>;
-	//#size-cells = <0>;
+	#address-cells = <1>;
+	#size-cells = <0>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&spi0_pins &spi0_pins_cs1>;
 	spi-num-chipselects = <2>;
