@@ -321,7 +321,7 @@
 	};
 
 	spi0_pins_cs1: spi0_pins_cs1 {
-		pins = "PG3";
+		pins = "PC2", "PG3";
 		function = "gpio_out";
 	};
 
