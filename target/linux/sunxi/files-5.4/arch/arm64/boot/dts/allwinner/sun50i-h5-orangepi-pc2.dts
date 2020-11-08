@@ -151,6 +151,17 @@
 		gpio = <&r_pio 0 2 GPIO_ACTIVE_HIGH>; /* PL2 */
 		status = "okay";
 	};
+
+	weight {
+        compatible = "avia,hx711";
+		//pinctrl-names = "default";
+		//pinctrl-0 = <&hx711_pins>;
+        sck-gpios = <&pio 2 4 GPIO_ACTIVE_HIGH>;
+        dout-gpios = <&pio 2 7 GPIO_ACTIVE_HIGH>;
+        avdd-supply = <&reg_vcc3v3>;
+        clock-frequency = <400000>;
+        status = "okay";
+    };
 };
 
 &codec {
@@ -294,6 +305,21 @@
 		function = "gpio_in";
 	};
 
+	rc522_reset_pins: rc522_reset_pins {
+		pins = "PA3";
+		function = "gpio_out";
+	};
+
+	rc522_irq_pins: rc522_irq_pins {
+		pins = "PA2";
+		function = "gpio_in";
+	};
+
+	hx711_pins: hx711_pins {
+		pins = "PC4", "PC7";
+		function = "gpio_out";
+	};
+
 	spi1_pins: spi1-pins {
 		pins = "PA15", "PA16", "PA14", "PA13";
 		function = "spi1";
@@ -309,9 +335,15 @@
 	cs-gpios = <&pio 0 13 GPIO_ACTIVE_HIGH>, <&pio 0 21 GPIO_ACTIVE_HIGH>;
 	status = "okay";
 
+	spidev: spidev@1 {
+		reg = <0>;
+		compatible = "rohm,dh2228fv";
+		spi-max-frequency = <20000000>;
+	};
+
 	tcan4x5x: tcan4x5x@0 {
 		compatible = "ti,tcan4x5x";
-		reg = <0>;
+		reg = <1>;
 		#address-cells = <1>;
 		#size-cells = <1>;
 		spi-max-frequency = <18000000>;
@@ -326,11 +358,6 @@
 		//clocks = <&osc40M>;
 	};
 
-	spidev: spidev@1 {
-		reg = <1>;
-		compatible = "rohm,dh2228fv";
-		spi-max-frequency = <20000000>;
-	};
 /*
 	can0: can@0 {
 		reg = <0>;

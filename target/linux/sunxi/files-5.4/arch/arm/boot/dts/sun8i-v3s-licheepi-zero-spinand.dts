@@ -303,14 +303,16 @@
 		};
 	};
 
-/*
-	wifi_pwrseq: wifi_pwrseq {
-		compatible = "mmc-pwrseq-simple";
-		reset-gpios = <&pio 1 5 GPIO_ACTIVE_LOW>; // PB5
-		// The esp8089 needs 200 ms after driving wifi-en high
-		post-power-on-delay-ms = <200>;
-	};
-*/
+	weight {
+        compatible = "avia,hx711";
+		//pinctrl-names = "default";
+		//pinctrl-0 = <&hx711_pins>;
+        sck-gpios = <&pio 6 4 GPIO_ACTIVE_HIGH>;
+        dout-gpios = <&pio 6 5 GPIO_ACTIVE_HIGH>;
+        avdd-supply = <&reg_vcc3v3>;
+        clock-frequency = <400000>;
+        status = "okay";
+    };
 };
 
 &pio {
@@ -322,6 +324,11 @@
 
 	spi0_pins_cs1: spi0_pins_cs1 {
 		pins = "PC2", "PG3";
+		function = "gpio_out";
+	};
+
+	hx711_pins: hx711_pins {
+		pins = "PG4", "PG5";
 		function = "gpio_out";
 	};
 
