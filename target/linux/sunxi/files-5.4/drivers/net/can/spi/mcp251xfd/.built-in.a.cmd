@@ -1,0 +1,1 @@
+cmd_drivers/net/can/spi/mcp251xfd/built-in.a := rm -f drivers/net/can/spi/mcp251xfd/built-in.a; aarch64-imx8mm-linux-gnu-ar cDPrST drivers/net/can/spi/mcp251xfd/built-in.a drivers/net/can/spi/mcp251xfd/mcp251xfd-core.o drivers/net/can/spi/mcp251xfd/mcp251xfd-crc16.o drivers/net/can/spi/mcp251xfd/mcp251xfd-regmap.o
