@@ -129,15 +129,6 @@
  struct ip_auth_hdr {
 --- a/include/uapi/linux/ipv6.h
 +++ b/include/uapi/linux/ipv6.h
-@@ -104,7 +104,7 @@ struct ipv6_destopt_hao {
- 	__u8			type;
- 	__u8			length;
- 	struct in6_addr		addr;
--} __attribute__((packed));
-+} __attribute__((packed, aligned(2)));
- 
- /*
-  *	IPv6 fixed header
 @@ -131,7 +131,7 @@ struct ipv6hdr {
  
  	struct	in6_addr	saddr;
@@ -455,17 +446,6 @@
  		}
  
  		memcpy(p, foc->val, foc->len);
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -548,7 +548,7 @@ static struct sk_buff *add_grec(struct s
- 		if (!skb)
- 			return NULL;
- 		psrc = skb_put(skb, sizeof(__be32));
--		*psrc = psf->sf_inaddr;
-+		net_hdr_word(psrc) = psf->sf_inaddr;
- 		scount++; stotal++;
- 		if ((type == IGMPV3_ALLOW_NEW_SOURCES ||
- 		     type == IGMPV3_BLOCK_OLD_SOURCES) && psf->sf_crcount) {
 --- a/include/uapi/linux/igmp.h
 +++ b/include/uapi/linux/igmp.h
 @@ -33,7 +33,7 @@ struct igmphdr {
@@ -848,28 +828,6 @@
  	};
  	if (skb->ip_summed != CHECKSUM_PARTIAL) {
  		*sum = csum_fold(csum_partial(diff, sizeof(diff),
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1876,15 +1876,15 @@ static int vxlan_build_skb(struct sk_buf
- 		return err;
- 
- 	vxh = __skb_push(skb, sizeof(*vxh));
--	vxh->vx_flags = VXLAN_HF_VNI;
--	vxh->vx_vni = vxlan_vni_field(vni);
-+	net_hdr_word(&vxh->vx_flags) = VXLAN_HF_VNI;
-+	net_hdr_word(&vxh->vx_vni) = vxlan_vni_field(vni);
- 
- 	if (type & SKB_GSO_TUNNEL_REMCSUM) {
- 		unsigned int start;
- 
- 		start = skb_checksum_start_offset(skb) - sizeof(struct vxlanhdr);
--		vxh->vx_vni |= vxlan_compute_rco(start, skb->csum_offset);
--		vxh->vx_flags |= VXLAN_HF_RCO;
-+		net_hdr_word(&vxh->vx_vni) |= vxlan_compute_rco(start, skb->csum_offset);
-+		net_hdr_word(&vxh->vx_flags) |= VXLAN_HF_RCO;
- 
- 		if (!skb_is_gso(skb)) {
- 			skb->ip_summed = CHECKSUM_NONE;
 --- a/include/linux/etherdevice.h
 +++ b/include/linux/etherdevice.h
 @@ -480,7 +480,7 @@ static inline bool is_etherdev_addr(cons
