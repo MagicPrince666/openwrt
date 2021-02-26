@@ -2206,16 +2206,6 @@ define Device/zbtlink_zbt-wd323
 endef
 TARGET_DEVICES += zbtlink_zbt-wd323
 
-define Device/xag_xlinkhs
-  SOC := ar9342
-  DEVICE_TITLE := xag xlinkhs 16M
-  IMAGE_SIZE := 16128k
-  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-acm \
-  arptables kmod-usb-net kmod-usb-net-rndis \
-  luci atftp wpad-mesh-openssl libstdcpp usbutils
-endef
-TARGET_DEVICES += xag_xlinkhs
-
 define Device/zyxel_nbg6616
   SOC := qca9557
   DEVICE_VENDOR := ZyXEL

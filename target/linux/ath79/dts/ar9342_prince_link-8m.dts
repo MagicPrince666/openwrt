@@ -1,0 +1,156 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "ar9344.dtsi"
+
+/ {
+	compatible = "xag,xlinkhs", "qca,ar9342";
+	model = "XAG XlinkHS";
+
+	aliases {
+		serial1 = &uart1;
+		led-boot = &system;
+		led-running = &system;
+		led-upgrade = &system;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		link1 {
+			label = "xag:red:link1";
+			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
+		};
+
+		system: link2 {
+			label = "xag:orange:link2";
+			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
+		};
+
+	};
+	
+	keys {
+		compatible = "gpio-keys";
+
+		reset {
+			label = "Reset button";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+			debounce-interval = <60>;
+		};
+	};
+};
+
+&ref {
+	clock-frequency = <40000000>;
+};
+
+&uart {
+	status = "okay";
+};
+
+&uart1 {
+	pinctrl-0 = <&hsuart_tx_pins &hsuart_rx_pins>;
+	status = "okay";
+};
+
+&usb {
+	status = "okay";
+	dr_mode = "host";
+	//dr_mode = "peripheral";
+};
+
+&usb_phy {
+	status = "okay";
+};
+
+&pinmux {
+	hsuart_tx_pins: hsuart_tx_pins {
+			pinctrl-single,bits = <0xc 0x00004f00 0x0000ff00>;	//gpio13 = fun3 0x4f=79 mask 0x0000ff00
+			//pinctrl-single,bits = <0x8 0x4f000000 0xff000000>;	//gpio11 = fun2 0x4f=79 mask 0x0000ff00
+		};
+	hsuart_rx_pins: hsuart_rx_pins {
+			pinctrl-single,bits = <0x3c 0x000f0000 0x000f0000>;		//GPIO_IN_ENABLE9 gpio15
+			//pinctrl-single,bits = <0x3c 0x00110000 0x00110000>;		//GPIO_IN_ENABLE9 gpio17
+		};
+};
+
+&gpio {
+
+	status = "okay";
+};
+
+&spi {
+	status = "okay";
+	num-cs = <1>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x020000>;
+				read-only;
+			};
+
+			partition@20000 {
+				label = "u-boot-env";
+				reg = <0x020000 0x010000>;
+				read-only;
+			};
+
+			partition@30000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x030000 0x7c0000>;
+			};
+
+			art: partition@7f0000 {
+				label = "art";
+				reg = <0x7f0000 0x010000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&wmac {
+	status = "okay";
+
+	mtd-cal-data = <&art 0x1000>;
+	mtd-mac-address = <&art 0x1002>;
+};
+
+&mdio0 {
+	status = "okay";
+
+	phy-mask = <4>;
+	phy0: ethernet-phy@0 {
+		phy-mode = "rgmii";
+		reg = <0>;
+	};
+};
+
+&eth0 {
+	status = "okay";
+	mtd-mac-address = <&art 0x0>;
+	pll-data = <0x03000000 0x00000101 0x00001313>;
+
+	phy-handle = <&phy0>;
+
+	gmac-config {
+		device = <&gmac>;
+		rxd-delay = <1>;
+		rxdv-delay = <1>;
+	};
+};

@@ -4,7 +4,7 @@ ARCH:=mips
 BOARD:=ath79
 BOARDNAME:=Atheros ATH79
 CPU_TYPE:=24kc
-SUBTARGETS:=generic mikrotik nand tiny
+SUBTARGETS:=generic prince mikrotik nand tiny
 
 FEATURES:=ramdisk squashfs usbgadget
 

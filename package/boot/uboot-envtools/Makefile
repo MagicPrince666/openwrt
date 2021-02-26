@@ -53,6 +53,7 @@ define Build/Configure
 endef
 
 MAKE_FLAGS += \
+	HOSTOS="linux" \
 	TARGET_CFLAGS="$(TARGET_CFLAGS)" \
 	TARGET_LDFLAGS="$(TARGET_LDFLAGS)" \
 	no-dot-config-targets=envtools \

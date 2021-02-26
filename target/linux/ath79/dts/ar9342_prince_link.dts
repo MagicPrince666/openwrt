@@ -59,8 +59,7 @@
 
 &usb {
 	status = "okay";
-	dr_mode = "host";
-	//dr_mode = "peripheral";
+	dr_mode = "peripheral";
 };
 
 &usb_phy {
