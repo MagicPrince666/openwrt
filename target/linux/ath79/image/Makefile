@@ -78,9 +78,6 @@ ifeq ($(SUBTARGET),generic)
 include generic-tp-link.mk
 include generic-ubnt.mk
 endif
-ifeq ($(SUBTARGET),prince)
-include prince.mk
-endif
 ifeq ($(SUBTARGET),tiny)
 include tiny-netgear.mk
 include tiny-tp-link.mk
