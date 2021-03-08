@@ -25,8 +25,9 @@ licheepi,licheepi-zero)
 	ucidef_set_interface_lan "eth0"
 	;;
 xunlong,orangepi-pc2)
+	ucidef_set_interface_lan "eth0"
 #	ucidef_set_interface_wan "eth0"
-	ucidef_set_interfaces_lan_wan "usb0" "eth0"
+#	ucidef_set_interfaces_lan_wan "usb0" "eth0"
 	;;
 *)
 	ucidef_set_interface_wan "eth0"
