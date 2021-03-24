@@ -209,10 +209,30 @@
 	status = "okay";
 };
 
+&pcie {
+	status = "okay";
+};
+
 &pinctrl {
 	pinctrl_leds: leds {
 		function = "led";
 		pins = "gpio1";
+	};
+};
+
+&switch0 {
+	ports {
+		port@4 {
+			reg = <4>;
+			label = "extsw";
+
+			phy-mode = "rgmii";
+
+			fixed-link {
+				speed = <1000>;
+				full-duplex;
+			};
+		};
 	};
 };
 
