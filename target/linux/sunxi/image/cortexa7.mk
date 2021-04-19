@@ -32,6 +32,10 @@ define Device/friendlyarm_nanopi-neo
   DEVICE_VENDOR := FriendlyARM
   DEVICE_MODEL := NanoPi NEO
   SOC := sun8i-h3
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-storage-extras \
+  kmod-usb-net kmod-usb-net-rndis \
+  luci kmod-fs-ext4 kmod-fs-vfat kmod-fuse usbutils usb-modeswitch usbmuxd
+  CONFIG_TARGET_ROOTFS_PARTSIZE := 7168
 endef
 TARGET_DEVICES += friendlyarm_nanopi-neo
 
