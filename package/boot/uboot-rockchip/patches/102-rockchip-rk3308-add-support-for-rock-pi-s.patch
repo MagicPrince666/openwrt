@@ -1,0 +1,27 @@
+Index: u-boot-2021.04/arch/arm/dts/Makefile
+===================================================================
+--- u-boot-2021.04.orig/arch/arm/dts/Makefile
++++ u-boot-2021.04/arch/arm/dts/Makefile
+@@ -103,6 +103,7 @@ dtb-$(CONFIG_ROCKCHIP_RK3288) += \
+ 	rk3288-vyasa.dtb
+ 
+ dtb-$(CONFIG_ROCKCHIP_RK3308) += \
++	rk3308-rock-pi-s.dtb \
+ 	rk3308-evb.dtb \
+ 	rk3308-roc-cc.dtb
+ 
+Index: u-boot-2021.04/board/rockchip/evb_rk3308/MAINTAINERS
+===================================================================
+--- u-boot-2021.04.orig/board/rockchip/evb_rk3308/MAINTAINERS
++++ u-boot-2021.04/board/rockchip/evb_rk3308/MAINTAINERS
+@@ -4,3 +4,10 @@ S:      Maintained
+ F:      board/rockchip/evb_rk3308
+ F:      include/configs/evb_rk3308.h
+ F:      configs/evb-rk3308_defconfig
++
++ROCK-PI-S-RK3308
++M:      Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
++S:      Maintained
++F:      configs/rock-pi-s-rk3308_defconfig
++F:      arch/arm/dts/rk3308-rock-pi-s-u-boot.dtsi
++F:      arch/arm/dts/rk3308-rock-pi-s.dts
