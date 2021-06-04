@@ -1,0 +1,30 @@
+Index: linux-5.4.123/arch/arm64/boot/dts/rockchip/Makefile
+===================================================================
+--- linux-5.4.123.orig/arch/arm64/boot/dts/rockchip/Makefile
++++ linux-5.4.123/arch/arm64/boot/dts/rockchip/Makefile
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-rock-pi-s.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-evb.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-nanopi-r2s.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-rock64.dtb
+Index: linux-5.4.123/drivers/spi/spi-rockchip.c
+===================================================================
+--- linux-5.4.123.orig/drivers/spi/spi-rockchip.c
++++ linux-5.4.123/drivers/spi/spi-rockchip.c
+@@ -844,11 +844,14 @@ static const struct dev_pm_ops rockchip_
+ 
+ static const struct of_device_id rockchip_spi_dt_match[] = {
+ 	{ .compatible = "rockchip,rv1108-spi", },
++	{ .compatible = "rockchip,px30-spi", },
+ 	{ .compatible = "rockchip,rk3036-spi", },
+ 	{ .compatible = "rockchip,rk3066-spi", },
+ 	{ .compatible = "rockchip,rk3188-spi", },
+ 	{ .compatible = "rockchip,rk3228-spi", },
+ 	{ .compatible = "rockchip,rk3288-spi", },
++	{ .compatible = "rockchip,rk3308-spi", },
++	{ .compatible = "rockchip,rk3328-spi", },
+ 	{ .compatible = "rockchip,rk3368-spi", },
+ 	{ .compatible = "rockchip,rk3399-spi", },
+ 	{ },
