@@ -72,6 +72,7 @@ endef
 
 UBOOT_TARGETS := \
   rock-pi-4-rk3399 \
+  rock-pi-s-rk3308 \
   rockpro64-rk3399 \
   nanopi-r2s-rk3328
 
