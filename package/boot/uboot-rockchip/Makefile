@@ -98,6 +98,13 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
+
+ifneq ($(OF_BLOB),)
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/idbloader.bin $(PKG_BUILD_DIR)/idbloader.bin
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/uboot.img $(PKG_BUILD_DIR)/uboot.img
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(OF_BLOB)/trust.bin $(PKG_BUILD_DIR)/trust.bin
+endif
+
 	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
 	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
 endef
