@@ -1,0 +1,10 @@
+diff --git a/targets/rk3308.sh b/targets/rk3308.sh
+new file mode 100644
+index 0000000..68c4546
+--- /dev/null
++++ b/targets/rk3308.sh
+@@ -0,0 +1,4 @@
++PLAT=rk3308
++TARGET=bl31
++BINARY_PATH=bl31/bl31.elf
++ARCH=aarch64
