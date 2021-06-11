@@ -28,7 +28,7 @@ define Device/radxa_rock-pi-s
   SUPPORTED_DEVICES := radxa,rockpis
   UBOOT_DEVICE_NAME := rock-pi-s-rk3308
   IMAGE/sysupgrade.img.gz :=  boot-common | boot-script rock-pi-s | rockpis-img | gzip | append-metadata
-  CONFIG_TARGET_ROOTFS_PARTSIZE := 7168
+  CONFIG_TARGET_ROOTFS_PARTSIZE := 8000
 endef
 TARGET_DEVICES += radxa_rock-pi-s
 
